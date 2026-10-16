@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Phishing Shield — Vault</title>
+  <meta http-equiv="Content-Security-Policy"
+    content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; font-src 'self';" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #0d0f17;
+      --surface:   #13161f;
+      --surface2:  #1a1d28;
+      --border:    rgba(255,255,255,0.08);
+      --accent:    #7c6cfc;
+      --accent2:   #00e5a0;
+      --danger:    #ff4455;
+      --warn:      #f59e0b;
+      --text:      #e8eaf0;
+      --muted:     #5a5f72;
+      --radius:    12px;
+
+      /* ── Premium 2026 tokens ── */
+      --glass-bg:      rgba(19, 22, 31, 0.55);
+      --glass-bg-2:    rgba(26, 29, 40, 0.55);
+      --glass-blur:    24px;
+      --glass-border:  rgba(255, 255, 255, 0.1);
+      --ease-spring:   cubic-bezier(0.34, 1.56, 0.64, 1);
+      --ease-out:      cubic-bezier(0.22, 1, 0.36, 1);
+      --grad-accent:   linear-gradient(135deg, var(--accent), #a78bfa);
+      --grad-success:  linear-gradient(135deg, var(--accent2), #34d399);
+      --shadow-glass:  0 8px 32px rgba(0,0,0,0.45), 0 1px 0 rgba(255,255,255,0.04) inset;
+      --shadow-glow-accent:  0 8px 24px rgba(124,108,252,0.28);
+      --shadow-glow-success: 0 8px 24px rgba(0,229,160,0.28);
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 14px;
+      min-height: 100vh;
+      overflow: hidden; /* Evita el scrollbar en el contenedor de la página */
+      position: relative;
+    }
+
+    /* ── Fondo con profundidad ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 70% 50% at 20% 10%, rgba(124,108,252,0.12), transparent),
+        radial-gradient(ellipse 60% 50% at 85% 90%, rgba(0,229,160,0.08), transparent);
+      pointer-events: none;
+      z-index: 0;
+      animation: bgPulse 12s ease-in-out infinite alternate;
+    }
+
+    @keyframes bgPulse {
+      0%   { opacity: 0.7; transform: scale(1); }
+      100% { opacity: 1;   transform: scale(1.04); }
+    }
+
+    /* ── Partículas flotantes ── */
+    .particles-bg {
+      position: fixed;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .particle {
+      position: absolute;
+      bottom: -10px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(124,108,252,0.55), rgba(0,229,160,0.18) 60%, transparent 72%);
+      filter: blur(0.5px);
+      animation-name: floatParticle;
+      animation-timing-function: ease-in;
+      animation-iteration-count: infinite;
+      opacity: 0;
+    }
+
+    @keyframes floatParticle {
+      0%   { transform: translateY(0) translateX(0); opacity: 0; }
+      10%  { opacity: 0.6; }
+      88%  { opacity: 0.35; }
+      100% { transform: translateY(-115vh) translateX(var(--drift, 24px)); opacity: 0; }
+    }
+
+    .app, .header, .content { position: relative; z-index: 1; }
+
+    /* Ocultar la barra de scroll en todos los elementos para lograr una estética limpia tipo App */
+    ::-webkit-scrollbar {
+      display: none;
+    }
+    * {
+      scrollbar-width: none; /* Firefox */
+      -ms-overflow-style: none; /* IE y Edge */
+    }
+
+    /* ── Layout ── */
+    .app { display: flex; flex-direction: column; height: 100vh; width: 100%; }
+
+    .header {
+      width: 100%;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+    }
+    .header-inner {
+      max-width: 800px;
+      margin: 0 auto;
+      width: 100%;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-sizing: border-box;
+    }
+    .header-logo { display: flex; align-items: center; gap: 10px; }
+    .header-logo svg { color: var(--accent); }
+    .header-title { font-size: 16px; font-weight: 700; }
+    .header-actions { display: flex; gap: 8px; }
+
+    .content { flex: 1; overflow-y: auto; padding: 24px 20px; width: 100%; max-width: 800px; margin: 0 auto; box-sizing: border-box; }
+
+    /* ── Buttons ── */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+      padding: 10px 18px; border-radius: 8px; border: none;
+      font-size: 13px; font-weight: 600; cursor: pointer;
+      position: relative; overflow: hidden;
+      transition: transform .25s var(--ease-spring), box-shadow .3s var(--ease-out), opacity .15s;
+    }
+    .btn:hover { opacity: .95; transform: translateY(-1px); }
+    .btn:active { transform: translateY(0) scale(.96); }
+    .btn:disabled { opacity: .4; cursor: not-allowed; transform: none; }
+    .btn-primary  { background: var(--grad-accent); color: #fff; box-shadow: 0 2px 10px rgba(124,108,252,0.15); }
+    .btn-primary:hover  { box-shadow: var(--shadow-glow-accent); }
+    .btn-success  { background: var(--grad-success); color: #06251c; box-shadow: 0 2px 10px rgba(0,229,160,0.15); }
+    .btn-success:hover  { box-shadow: var(--shadow-glow-success); }
+    .btn-danger   { background: linear-gradient(135deg, var(--danger), #ff7a86); color: #fff; }
+    .btn-danger:hover { box-shadow: 0 8px 22px rgba(255,68,85,0.28); }
+    .btn-ghost    { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
+    .btn-icon     { width: 34px; height: 34px; padding: 0; border-radius: 8px; background: var(--surface2); color: var(--muted); border: 1px solid var(--border); }
+    .btn-icon:hover { color: var(--text); border-color: var(--accent); }
+    .btn-full { width: 100%; }
+
+    /* ── Ripple ── */
+    .ripple-container { position: relative; overflow: hidden; }
+    .ripple {
+      position: absolute; border-radius: 50%;
+      background: rgba(255,255,255,0.35);
+      transform: scale(0);
+      animation: rippleAnim .6s ease-out;
+      pointer-events: none; z-index: 3;
+    }
+    @keyframes rippleAnim { to { transform: scale(2.6); opacity: 0; } }
+
+    /* ── Inputs ── */
+    .field { margin-bottom: 14px; }
+    .field label { display: block; font-size: 12px; font-weight: 600; color: var(--muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: .05em; }
+    .input-wrap { position: relative; }
+    .input-wrap input { width: 100%; }
+    .input-wrap .eye-btn { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: var(--muted); padding: 4px; transition: color .2s, transform .2s var(--ease-spring); }
+    .input-wrap .eye-btn:hover { color: var(--accent); transform: translateY(-50%) scale(1.15); }
+    input, textarea {
+      width: 100%; padding: 10px 14px; border-radius: 8px;
+      background: var(--surface2); border: 1px solid var(--border);
+      color: var(--text); font-size: 14px; outline: none;
+      transition: border-color .25s var(--ease-out), box-shadow .25s var(--ease-out), background .25s var(--ease-out);
+    }
+    input:focus, textarea:focus {
+      border-color: var(--accent);
+      background: var(--surface);
+      box-shadow: 0 0 0 3px rgba(124,108,252,0.15), 0 4px 16px rgba(124,108,252,0.12);
+    }
+    input.has-eye { padding-right: 40px; }
+    textarea { resize: vertical; min-height: 70px; font-family: inherit; }
+
+    /* ── Cards (Glassmorphism 2.0) ── */
+    .card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(var(--glass-blur)) saturate(160%);
+      -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(160%);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius); padding: 20px; margin-bottom: 12px;
+      position: relative; overflow: hidden;
+      box-shadow: var(--shadow-glass);
+    }
+    .card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent);
+    }
+
+    /* ── Screens ── */
+    .screen { display: none; }
+    .screen.active { display: block; animation: screenIn .45s var(--ease-spring) both; }
+
+    /* ─ Loading premium ─ */
+    #screen-loading {
+      position: fixed; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--bg); z-index: 100;
+    }
+    .loader-rings {
+      position: relative; width: 64px; height: 64px; margin: 0 auto 16px;
+    }
+    .loader-rings span {
+      position: absolute; inset: 0; border-radius: 50%;
+      border: 3px solid transparent;
+    }
+    .loader-rings span:nth-child(1) { border-top-color: var(--accent); animation: spin .9s linear infinite; }
+    .loader-rings span:nth-child(2) { inset: 8px; border-right-color: var(--accent2); animation: spin 1.3s linear infinite reverse; }
+    .loader-rings span:nth-child(3) { inset: 16px; border-bottom-color: #a78bfa; animation: spin 1.7s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loader-text {
+      text-align: center; font-size: 12px; color: var(--muted);
+      letter-spacing: .05em; animation: loaderPulse 1.6s ease-in-out infinite;
+    }
+    @keyframes loaderPulse { 0%,100% { opacity: .5; } 50% { opacity: 1; } }
+
+    /* ─ Setup / Unlock center card ─ */
+    .center-wrap {
+      display: flex; align-items: center; justify-content: center;
+      min-height: calc(100vh - 70px);
+      padding: 20px 0;
+    }
+    .auth-card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(var(--glass-blur)) saturate(160%);
+      -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(160%);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius); padding: 28px; width: 100%; max-width: 380px;
+      position: relative; overflow: hidden;
+      box-shadow: var(--shadow-glass);
+      animation: screenIn .5s var(--ease-spring) both;
+    }
+    .auth-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent);
+    }
+    .auth-icon {
+      width: 52px; height: 52px; border-radius: 14px;
+      background: linear-gradient(135deg, #7c6cfc33, #00e5a022);
+      border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 16px;
+      box-shadow: 0 8px 20px rgba(124,108,252,0.2);
+      animation: iconFloat 3s ease-in-out infinite;
+    }
+    @keyframes iconFloat {
+      0%, 100% { transform: translateY(0); }
+      50%      { transform: translateY(-6px); }
+    }
+    @keyframes screenIn {
+      from { opacity: 0; transform: translateY(14px) scale(.97); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .auth-title { font-size: 20px; font-weight: 700; text-align: center; margin-bottom: 4px; }
+    .auth-sub   { font-size: 12px; color: var(--muted); text-align: center; margin-bottom: 22px; }
+
+    /* ─ Tooltips elegantes ─ */
+    [data-tooltip] { position: relative; }
+    [data-tooltip]::after {
+      content: attr(data-tooltip);
+      position: absolute; bottom: calc(100% + 8px); left: 50%;
+      transform: translateX(-50%) translateY(4px);
+      background: rgba(19,22,31,0.85);
+      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+      border: 1px solid var(--glass-border);
+      color: var(--text); font-size: 11px; font-weight: 500;
+      padding: 5px 10px; border-radius: 6px; white-space: nowrap;
+      opacity: 0; pointer-events: none; z-index: 20;
+      transition: opacity .2s var(--ease-out), transform .2s var(--ease-out);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.35);
+    }
+    [data-tooltip]:hover::after {
+      opacity: 1; transform: translateX(-50%) translateY(0);
+    }
+
+    /* ─ TOTP setup ─ */
+    .totp-code-box {
+      background: var(--surface2); border: 1px solid var(--border); border-radius: 8px;
+      padding: 14px; font-family: 'Courier New', monospace; font-size: 13px;
+      word-break: break-all; color: var(--accent); margin-bottom: 10px;
+    }
+    .totp-uri-box {
+      background: var(--surface2); border: 1px solid var(--border); border-radius: 8px;
+      padding: 10px 14px; font-family: 'Courier New', monospace; font-size: 10px;
+      word-break: break-all; color: var(--muted); margin-bottom: 14px;
+    }
+    .totp-steps { font-size: 12px; color: var(--muted); line-height: 1.7; margin-bottom: 14px; }
+    .totp-steps b { color: var(--text); }
+
+    /* ─ Main vault ─ */
+    .search-bar { position: relative; margin-bottom: 16px; }
+    .search-bar input { padding-left: 36px; }
+    .search-bar .search-icon { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: var(--muted); pointer-events: none; }
+
+    .entry-list { display: flex; flex-direction: column; gap: 8px; }
+    .entry-item {
+      background: var(--glass-bg-2, rgba(26,29,40,0.55));
+      backdrop-filter: blur(14px) saturate(150%);
+      -webkit-backdrop-filter: blur(14px) saturate(150%);
+      border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 14px 16px;
+      display: flex; align-items: center; gap: 12px;
+      cursor: pointer;
+      transition: border-color .3s var(--ease-out), transform .35s var(--ease-spring), box-shadow .35s var(--ease-out);
+      opacity: 0; transform: translateY(14px) scale(.97);
+      animation: entryIn .5s var(--ease-spring) forwards;
+    }
+    @keyframes entryIn {
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .entry-item:hover {
+      border-color: var(--accent);
+      transform: translateX(6px) scale(1.01);
+      box-shadow: var(--shadow-glow-accent);
+    }
+    .entry-favicon {
+      width: 36px; height: 36px; border-radius: 8px;
+      background: var(--surface2); border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; flex-shrink: 0;
+      transition: transform .35s var(--ease-spring);
+    }
+    .entry-item:hover .entry-favicon { transform: scale(1.08) rotate(-4deg); }
+    .entry-info { flex: 1; min-width: 0; }
+    .entry-name { font-weight: 600; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .entry-user { font-size: 12px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .entry-actions { display: flex; gap: 6px; flex-shrink: 0; }
+
+    .empty-state { text-align: center; padding: 48px 20px; color: var(--muted); }
+    .empty-state svg { margin: 0 auto 12px; display: block; opacity: .4; }
+    .empty-state p { font-size: 13px; }
+
+    /* ─ Add/Edit form ─ */
+    .form-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+    .form-title  { font-size: 18px; font-weight: 700; }
+    .pass-row    { display: flex; gap: 8px; }
+    .pass-row .input-wrap { flex: 1; }
+
+    /* ─ Generator modal ─ */
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,.6); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+      display: none; align-items: center; justify-content: center; z-index: 999;
+      opacity: 0; transition: opacity .3s var(--ease-out);
+    }
+    .modal-overlay.open { display: flex; opacity: 1; }
+    .modal {
+      background: var(--glass-bg);
+      backdrop-filter: blur(var(--glass-blur)) saturate(160%);
+      -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(160%);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius); padding: 24px; width: 360px; max-width: 95vw;
+      position: relative; overflow: hidden;
+      box-shadow: var(--shadow-glass);
+      transform: scale(.92) translateY(12px); opacity: 0;
+      transition: transform .35s var(--ease-spring), opacity .3s var(--ease-out);
+    }
+    .modal-overlay.open .modal { transform: scale(1) translateY(0); opacity: 1; }
+    .modal::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent);
+    }
+    .modal-title { font-size: 16px; font-weight: 700; margin-bottom: 16px; }
+    .generated-pass {
+      background: var(--surface2); border: 1px solid var(--border); border-radius: 8px;
+      padding: 14px; font-family: 'Courier New', monospace; font-size: 16px;
+      word-break: break-all; color: var(--accent2); margin-bottom: 10px;
+      letter-spacing: .04em;
+      transition: box-shadow .3s var(--ease-out);
+    }
+    .entropy-bar { height: 4px; border-radius: 2px; background: var(--border); margin-bottom: 4px; overflow: hidden; }
+    .entropy-fill { height: 100%; border-radius: 2px; transition: width .4s var(--ease-out), background .3s, box-shadow .3s; }
+    .entropy-label { font-size: 11px; color: var(--muted); margin-bottom: 14px; }
+
+    .slider-row { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+    .slider-row label { font-size: 12px; color: var(--muted); white-space: nowrap; }
+    .slider-row input[type=range] { flex: 1; accent-color: var(--accent); }
+    .slider-val { font-size: 13px; font-weight: 700; min-width: 24px; text-align: right; }
+
+    .opts-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+    .opt-chip {
+      padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 600;
+      cursor: pointer; border: 1px solid var(--border); background: var(--surface2);
+      color: var(--muted); transition: all .25s var(--ease-spring); user-select: none;
+    }
+    .opt-chip:hover { transform: translateY(-1px); }
+    .opt-chip:active { transform: scale(.94); }
+    .opt-chip.on { background: var(--accent)22; border-color: var(--accent); color: var(--accent); box-shadow: 0 0 12px rgba(124,108,252,0.2); }
+
+    .gen-actions { display: flex; gap: 8px; }
+
+    /* ─ Status badge ─ */
+    .status-dot {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 11px; color: var(--muted);
+    }
+    .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent2); animation: dotPulse 2s ease-in-out infinite; }
+    .dot.locked { background: var(--danger); animation: dotPulseDanger 2s ease-in-out infinite; }
+    @keyframes dotPulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(0,229,160,.5); }
+      50%      { box-shadow: 0 0 0 5px rgba(0,229,160,0); }
+    }
+    @keyframes dotPulseDanger {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(255,68,85,.5); }
+      50%      { box-shadow: 0 0 0 5px rgba(255,68,85,0); }
+    }
+
+    /* ─ Alert ─ */
+    .alert {
+      padding: 10px 14px; border-radius: 8px; font-size: 12px;
+      margin-bottom: 14px; display: none;
+      opacity: 0; transform: translateY(-4px);
+      transition: opacity .3s var(--ease-out), transform .3s var(--ease-out);
+    }
+    .alert.error   { background: #ff445522; border: 1px solid var(--danger); color: var(--danger); display: block; opacity: 1; transform: translateY(0); }
+    .alert.success { background: #00e5a022; border: 1px solid var(--accent2); color: var(--accent2); display: block; opacity: 1; transform: translateY(0); }
+
+    /* ─ Copy feedback ─ */
+    .copy-toast {
+      position: fixed; bottom: 20px; left: 50%;
+      background: var(--glass-bg);
+      backdrop-filter: blur(16px) saturate(160%);
+      -webkit-backdrop-filter: blur(16px) saturate(160%);
+      border: 1px solid var(--glass-border); border-radius: 8px;
+      padding: 8px 18px; font-size: 13px; font-weight: 600; color: var(--accent2);
+      box-shadow: var(--shadow-glow-success);
+      opacity: 0; transform: translate(-50%, 14px) scale(.94);
+      transition: opacity .35s var(--ease-spring), transform .35s var(--ease-spring);
+      pointer-events: none; z-index: 1000;
+    }
+    .copy-toast.show { opacity: 1; transform: translate(-50%, 0) scale(1); }
+
+    /* ─ Strength indicator ─ */
+    .strength-row { display: flex; align-items: center; gap: 8px; margin-top: 6px; }
+    .strength-bar { flex: 1; height: 3px; border-radius: 2px; background: var(--border); overflow: hidden; }
+    .strength-fill { height: 100%; border-radius: 2px; transition: width .4s var(--ease-out), background .3s, box-shadow .3s; }
+    .strength-label { font-size: 11px; color: var(--muted); }
+
+    /* ─ Custom checkbox ─ */
+    .totp-toggle {
+      display: flex; align-items: center; gap: 10px;
+      margin-top: 14px; margin-bottom: 16px;
+      cursor: pointer; user-select: none;
+    }
+    .totp-toggle input[type="checkbox"] { display: none; }
+    .totp-toggle .check-box {
+      width: 18px; height: 18px; flex-shrink: 0;
+      border-radius: 5px; border: 2px solid var(--muted);
+      background: var(--surface2);
+      display: flex; align-items: center; justify-content: center;
+      transition: border-color .15s, background .15s;
+    }
+    .totp-toggle input:checked + .check-box {
+      background: var(--accent); border-color: var(--accent);
+    }
+    .totp-toggle input:checked + .check-box::after {
+      content: ''; display: block;
+      width: 5px; height: 9px;
+      border: 2px solid #fff; border-top: none; border-left: none;
+      transform: rotate(45deg) translate(-1px, -1px);
+    }
+    .totp-toggle .check-label {
+      font-size: 13px; color: var(--text); line-height: 1.3;
+    }
+    .totp-toggle .check-sub {
+      font-size: 11px; color: var(--muted); display: block; margin-top: 1px;
+    }
+
+    /* ── Accesibilidad: respeta prefers-reduced-motion ── */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: .001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .001ms !important;
+      }
+      .particles-bg { display: none; }
+      body::before { animation: none; }
+    }
+
+    /* ── Responsividad para Dispositivos Móviles ── */
+    @media (max-width: 480px) {
+      .content { padding: 16px 12px; }
+      .auth-card { padding: 20px 16px; }
+      .header-inner { padding: 12px 16px; }
+      .entry-item { padding: 10px 12px; gap: 8px; }
+      .modal { padding: 16px; }
+    }
+  </style>
+</head>
+<body>
+<div class="particles-bg" id="particlesBg"></div>
+<div class="app">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="header-inner">
+      <div class="header-logo">
+        <img src="logo.png" style="height:24px; width:auto; object-fit:contain;" alt="Phishing Shield"/>
+        <span class="header-title">Vault</span>
+      </div>
+      <div class="header-actions">
+        <span class="status-dot" id="lockStatus">
+          <span class="dot locked" id="lockDot"></span>
+          <span id="lockLabel">Bloqueado</span>
+        </span>
+        <button class="btn-icon" id="btnLock" data-tooltip="Bloquear vault" title="Bloquear vault" style="display:none">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+          </svg>
+        </button>
+        <button class="btn-icon" id="btnGenerator" data-tooltip="Generar contraseña" title="Generar contraseña" style="display:none">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Content area -->
+  <div class="content">
+
+    <!-- Loading -->
+    <div id="screen-loading" class="screen active" style="display:flex">
+      <div>
+        <div class="loader-rings"><span></span><span></span><span></span></div>
+        <div class="loader-text">Cargando bóveda…</div>
+      </div>
+    </div>
+
+    <!-- Setup -->
+    <div id="screen-setup" class="screen">
+      <div class="center-wrap">
+        <div class="auth-card">
+          <div class="auth-icon" style="background:none; border:none; box-shadow:none; height:60px; width:auto; animation:iconFloat 3s ease-in-out infinite; display:flex; align-items:center; justify-content:center; margin-bottom:8px;">
+            <img src="logo.png" style="height:100%; width:auto; object-fit:contain;" alt="Phishing Shield"/>
+          </div>
+          <div class="auth-title">Crear Vault</div>
+          <div class="auth-sub">Tu vault cifrado local con AES-256-GCM</div>
+          <div class="alert" id="setupAlert"></div>
+
+          <!-- Step 1: master password -->
+          <div id="setupStep1">
+            <div class="field">
+              <label>Contraseña maestra</label>
+              <div class="input-wrap">
+                <input type="password" id="setupPass" class="has-eye" placeholder="Mínimo 12 caracteres" />
+                <button class="eye-btn" data-target="setupPass" data-tooltip="Mostrar/ocultar">👁</button>
+              </div>
+            </div>
+            <div class="field">
+              <label>Confirmar contraseña</label>
+              <div class="input-wrap">
+                <input type="password" id="setupPassConfirm" class="has-eye" placeholder="Repite la contraseña" />
+                <button class="eye-btn" data-target="setupPassConfirm" data-tooltip="Mostrar/ocultar">👁</button>
+              </div>
+            </div>
+            <div class="strength-row">
+              <div class="strength-bar"><div class="strength-fill" id="strengthFill" style="width:0%;background:var(--danger)"></div></div>
+              <span class="strength-label" id="strengthLabel">—</span>
+            </div>
+            <div id="strengthTips" style="font-size:11px;color:#f59e0b;min-height:14px;margin-top:2px"></div>
+            <!-- 2FA (TOTP) oculto — mejora futura -->
+            <input type="checkbox" id="setupEnableTotp" style="display:none" />
+            <div id="setupStep2" style="display:none">
+              <div class="totp-code-box" id="totpSecretDisplay"></div>
+              <div class="totp-uri-box" id="totpUriDisplay"></div>
+              <input type="text" id="setupTotpCode" maxlength="6" placeholder="123456" style="display:none" />
+              <button class="btn btn-ghost" id="btnSetupBack" style="display:none">← Atrás</button>
+              <button class="btn btn-primary btn-full" id="btnSetupCreate" style="display:none">Crear Vault</button>
+            </div>
+            <button class="btn btn-primary btn-full" id="btnSetupNext" style="margin-top: 10px;">Crear Vault</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Unlock -->
+    <div id="screen-unlock" class="screen">
+      <div class="center-wrap">
+        <div class="auth-card">
+          <div class="auth-icon" style="background:none; border:none; box-shadow:none; height:60px; width:auto; animation:iconFloat 3s ease-in-out infinite; display:flex; align-items:center; justify-content:center; margin-bottom:8px;">
+            <img src="logo.png" style="height:100%; width:auto; object-fit:contain;" alt="Phishing Shield"/>
+          </div>
+          <div class="auth-title">Desbloquear Vault</div>
+          <div class="auth-sub">Ingresa tu contraseña maestra</div>
+          <div class="alert" id="unlockAlert"></div>
+          <div class="field">
+            <label>Contraseña maestra</label>
+            <div class="input-wrap">
+              <input type="password" id="unlockPass" class="has-eye" placeholder="Contraseña maestra" />
+              <button class="eye-btn" data-target="unlockPass" data-tooltip="Mostrar/ocultar">👁</button>
+            </div>
+          </div>
+          <div class="field" id="unlockTotpField" style="display:none">
+            <label>Código 2FA</label>
+            <input type="text" id="unlockTotpCode" maxlength="6" placeholder="123456" style="letter-spacing:.2em;font-size:18px;text-align:center" />
+          </div>
+          <button class="btn btn-primary btn-full" id="btnUnlock" style="margin-top: 10px;">Desbloquear</button>
+          <button id="btnResetVault" style="background: none; border: none; color: var(--danger); font-size: 11px; cursor: pointer; text-decoration: underline; margin: 20px auto 0; display: block; font-family: inherit;">Borrar bóveda y empezar de nuevo</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main vault -->
+    <div id="screen-main" class="screen">
+      <div class="search-bar">
+        <svg class="search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        <input type="text" id="searchInput" placeholder="Buscar sitio o usuario…" />
+      </div>
+      <div class="entry-list" id="entryList"></div>
+      <div class="empty-state" id="emptyState" style="display:none">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+        </svg>
+        <p>No hay credenciales guardadas.<br/>Presiona <b>+</b> para agregar una.</p>
+      </div>
+      <br/>
+      <button class="btn btn-primary btn-full" id="btnAddEntry">+ Agregar credencial</button>
+    </div>
+
+    <!-- Add / Edit form -->
+    <div id="screen-form" class="screen">
+      <div class="form-header">
+        <div class="form-title" id="formTitle">Nueva credencial</div>
+        <button class="btn btn-ghost btn-icon" id="btnFormCancel">✕</button>
+      </div>
+      <div class="alert" id="formAlert"></div>
+      <div class="field">
+        <label>Nombre del sitio</label>
+        <input type="text" id="fName" placeholder="Ej: Google, Banco Santander…" />
+      </div>
+      <div class="field">
+        <label>URL</label>
+        <input type="text" id="fUrl" placeholder="https://example.com" />
+      </div>
+      <div class="field">
+        <label>Usuario / Email</label>
+        <input type="text" id="fUsername" placeholder="usuario@email.com" />
+      </div>
+      <div class="field">
+        <label>Contraseña</label>
+        <div class="pass-row">
+          <div class="input-wrap">
+            <input type="password" id="fPassword" class="has-eye" placeholder="••••••••••••" />
+            <button class="eye-btn" data-target="fPassword" data-tooltip="Mostrar/ocultar">👁</button>
+          </div>
+          <button class="btn btn-ghost" id="btnQuickGen" data-tooltip="Generar contraseña" title="Generar contraseña">⚡</button>
+        </div>
+        <div class="strength-row">
+          <div class="strength-bar"><div class="strength-fill" id="formStrengthFill" style="width:0%;background:var(--danger)"></div></div>
+          <span class="strength-label" id="formStrengthLabel">—</span>
+        </div>
+        <div id="formStrengthTips" style="font-size:11px;color:#f59e0b;min-height:14px;margin-top:2px"></div>
+      </div>
+      <div class="field">
+        <label>Notas</label>
+        <textarea id="fNotes" placeholder="Notas adicionales (opcional)"></textarea>
+      </div>
+      <input type="hidden" id="fId" />
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-ghost" id="btnFormCancel2">Cancelar</button>
+        <button class="btn btn-primary btn-full" id="btnFormSave">Guardar</button>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /app -->
+
+<!-- Generator modal -->
+<div class="modal-overlay" id="generatorModal">
+  <div class="modal">
+    <div class="modal-title">⚡ Generador de contraseñas</div>
+    <div class="generated-pass" id="generatedPass">—</div>
+    <div class="entropy-bar"><div class="entropy-fill" id="entropyFill" style="width:0%"></div></div>
+    <div class="entropy-label" id="entropyLabel">—</div>
+    <div class="slider-row">
+      <label>Longitud</label>
+      <input type="range" id="genLength" min="8" max="64" value="20" />
+      <span class="slider-val" id="genLengthVal">20</span>
+    </div>
+    <div class="opts-row">
+      <span class="opt-chip on" data-opt="upper">ABC</span>
+      <span class="opt-chip on" data-opt="lower">abc</span>
+      <span class="opt-chip on" data-opt="numbers">123</span>
+      <span class="opt-chip on" data-opt="symbols">!@#</span>
+    </div>
+    <div class="gen-actions">
+      <button class="btn btn-ghost" id="btnRegenerate">↺ Regenerar</button>
+      <button class="btn btn-ghost" id="btnCopyGen">Copiar</button>
+      <button class="btn btn-primary btn-full" id="btnUsePassword">Usar →</button>
+    </div>
+    <br/>
+    <button class="btn btn-ghost btn-full" id="btnCloseGen">Cerrar</button>
+  </div>
+</div>
+
+<!-- Copy toast -->
+<div class="copy-toast" id="copyToast">✓ Copiado</div>
+
+<script type="module" src="vault-popup.js"></script>
+</body>
+</html>

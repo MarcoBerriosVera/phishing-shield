@@ -1,0 +1,763 @@
+/* Custom Modern Styling for Presentation Slides */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Outfit:wght@400;700;900&family=Fira+Code:wght@400;600&display=swap');
+
+:root {
+    --bg-main: #090d13;
+    --bg-card: rgba(22, 27, 34, 0.7);
+    --border-color: #30363d;
+    --text-main: #f0f6fc;
+    --text-muted: #8b949e;
+    
+    /* Vibrant Accent Colors */
+    --accent-blue: #58a6ff;
+    --accent-blue-glow: rgba(88, 166, 255, 0.2);
+    --accent-green: #3fb950;
+    --accent-green-glow: rgba(63, 185, 80, 0.2);
+    --accent-red: #ff7b72;
+    --accent-red-glow: rgba(255, 123, 114, 0.2);
+    --accent-yellow: #d29922;
+    --accent-yellow-glow: rgba(210, 153, 34, 0.2);
+    --accent-purple: #bc8cff;
+    --accent-purple-glow: rgba(188, 140, 255, 0.2);
+    
+    --transition-speed: 0.5s;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    overflow: hidden;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Floating Logo Header (Corner Branding) */
+.logo-header {
+    position: fixed;
+    top: 20px;
+    left: 40px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    z-index: 10;
+    background: rgba(22, 27, 34, 0.6);
+    border: 1px solid var(--border-color);
+    padding: 8px 16px;
+    border-radius: 12px;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+.logo-header img {
+    height: 26px;
+    width: auto;
+    border-radius: 6px;
+}
+
+.logo-header span {
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--text-main);
+    letter-spacing: 0.5px;
+}
+
+/* Progress Bar */
+.progress-container {
+    width: 100%;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.05);
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 100;
+}
+
+.progress-bar {
+    height: 100%;
+    width: 10%;
+    background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple), var(--accent-green));
+    box-shadow: 0 0 10px rgba(88, 166, 255, 0.5);
+    transition: width 0.3s cubic-bezier(0.1, 0.8, 0.3, 1);
+}
+
+/* Presentation Canvas */
+.presentation-container {
+    width: 90%;
+    max-width: 1100px;
+    height: 80vh;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Slides styling */
+.slide {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    visibility: hidden;
+    transform: scale(0.95) translateY(20px);
+    transition: all var(--transition-speed) cubic-bezier(0.25, 1, 0.5, 1);
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+    padding: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow-y: auto;
+}
+
+.slide.active {
+    opacity: 1;
+    visibility: visible;
+    transform: scale(1) translateY(0);
+}
+
+/* Slide Content */
+.slide-content {
+    width: 100%;
+    max-height: 100%;
+}
+
+/* Slide Titles */
+h2 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 2.2rem;
+    font-weight: 800;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    color: var(--text-main);
+}
+
+.section-intro {
+    color: var(--text-muted);
+    font-size: 1.1rem;
+    margin-bottom: 30px;
+}
+
+/* Cover Slide specific */
+.cover-slide {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+.cover-logo {
+    margin-bottom: 15px;
+}
+
+.cover-logo img {
+    width: 90px;
+    height: auto;
+    border-radius: 16px;
+    border: 2px solid var(--border-color);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+}
+
+.badge {
+    background: rgba(88, 166, 255, 0.1);
+    border: 1px solid var(--accent-blue);
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--accent-blue);
+    margin-bottom: 20px;
+    letter-spacing: 1px;
+}
+
+.badge.success {
+    background: rgba(63, 185, 80, 0.1);
+    border-color: var(--accent-green);
+    color: var(--accent-green);
+}
+
+h1.glow-text {
+    font-family: 'Outfit', sans-serif;
+    font-size: 5rem;
+    font-weight: 900;
+    letter-spacing: -2px;
+    margin-bottom: 15px;
+    background: linear-gradient(135deg, #fff 30%, var(--accent-blue) 70%, var(--accent-purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 20px rgba(88, 166, 255, 0.3));
+}
+
+.subtitle {
+    font-size: 1.4rem;
+    color: var(--text-muted);
+    max-width: 800px;
+    margin-bottom: 40px;
+    line-height: 1.5;
+}
+
+.cover-details {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    text-align: left;
+    max-width: 750px;
+    width: 100%;
+    padding: 25px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 16px;
+    font-size: 0.95rem;
+    margin-bottom: 30px;
+}
+
+.cover-details p {
+    color: var(--text-muted);
+}
+
+.cover-details strong {
+    color: var(--text-main);
+}
+
+.year-badge {
+    font-family: 'Fira Code', monospace;
+    font-size: 1.1rem;
+    color: var(--accent-blue);
+}
+
+/* Grids and Layouts */
+.grid-2 {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 30px;
+    align-items: start;
+}
+
+/* Card Styling */
+.card {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 25px;
+    transition: all 0.3s ease;
+}
+
+.card h3 {
+    font-size: 1.35rem;
+    font-weight: 700;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.card ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.card ul li {
+    margin-bottom: 15px;
+    position: relative;
+    padding-left: 20px;
+    line-height: 1.5;
+    font-size: 0.95rem;
+}
+
+.card ul li::before {
+    content: "•";
+    color: var(--accent-blue);
+    font-size: 1.5rem;
+    position: absolute;
+    left: 0;
+    top: -2px;
+}
+
+.border-red {
+    border-color: rgba(255, 123, 114, 0.3);
+}
+
+.border-green {
+    border-color: rgba(63, 185, 80, 0.3);
+}
+
+.border-blue {
+    border-color: rgba(88, 166, 255, 0.3);
+}
+
+.border-yellow {
+    border-color: rgba(210, 153, 34, 0.3);
+}
+
+/* Flex Cards (Slide 3) */
+.flex-cards {
+    display: flex;
+    gap: 20px;
+}
+
+.flex-cards .card {
+    flex: 1;
+    text-align: center;
+    padding: 35px 20px;
+}
+
+.card-icon {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.1));
+}
+
+.flex-cards .card p {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin-top: 10px;
+}
+
+.hover-glow:hover {
+    transform: translateY(-5px);
+    border-color: var(--accent-blue);
+    box-shadow: 0 10px 25px var(--accent-blue-glow);
+}
+
+/* Stats Panel (Slide 2) */
+.stats-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.stat-card {
+    background: rgba(255, 255, 255, 0.01);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.stat-num {
+    font-family: 'Outfit', sans-serif;
+    font-size: 2.5rem;
+    font-weight: 900;
+}
+
+.stat-lbl {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    line-height: 1.3;
+}
+
+/* Interactive Architecture (Slide 4) */
+.interactive-arch {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 40px 0;
+    background: rgba(255, 255, 255, 0.01);
+    padding: 20px;
+    border-radius: 16px;
+    border: 1px solid var(--border-color);
+}
+
+.arch-node {
+    flex: 1;
+    max-width: 220px;
+    padding: 25px 15px;
+    background: #161b22;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.arch-node i {
+    font-size: 2.2rem;
+    color: var(--text-muted);
+    transition: color 0.3s;
+}
+
+.arch-node span {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-muted);
+}
+
+.arch-node:hover {
+    border-color: var(--accent-blue);
+    background: rgba(88, 166, 255, 0.05);
+}
+
+.arch-node.active {
+    border-color: var(--accent-blue);
+    background: rgba(88, 166, 255, 0.1);
+    box-shadow: 0 0 20px var(--accent-blue-glow);
+}
+
+.arch-node.active i {
+    color: var(--accent-blue);
+}
+
+.arch-node.active span {
+    color: var(--text-main);
+}
+
+.arch-arrow {
+    color: var(--border-color);
+    font-size: 1.5rem;
+}
+
+.arch-description-card {
+    min-height: 120px;
+}
+
+/* Engines List (Slide 5) */
+.engines-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.engine-row {
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 18px 25px;
+    transition: all 0.3s;
+}
+
+.engine-row:hover {
+    background: rgba(255, 255, 255, 0.04);
+    border-color: var(--border-color);
+}
+
+.engine-tag {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 6px 14px;
+    border-radius: 8px;
+    width: 220px;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.tag-go {
+    background: rgba(88, 166, 255, 0.1);
+    color: var(--accent-blue);
+    border: 1px solid var(--accent-blue);
+}
+
+.tag-python {
+    background: rgba(188, 140, 255, 0.1);
+    color: var(--accent-purple);
+    border: 1px solid var(--accent-purple);
+}
+
+.engine-desc {
+    margin-left: 30px;
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    line-height: 1.4;
+}
+
+/* Timer Display (Slide 6) */
+.timer-display {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    padding: 25px;
+    background: rgba(210, 153, 34, 0.05);
+    border: 1px solid var(--accent-yellow);
+    border-radius: 12px;
+    margin: 20px 0;
+}
+
+.timer-num {
+    font-family: 'Outfit', sans-serif;
+    font-size: 3rem;
+    font-weight: 900;
+    color: var(--accent-yellow);
+}
+
+.timer-lbl {
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.timer-note {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    text-align: center;
+    line-height: 1.4;
+}
+
+/* SOC Live logs Preview (Slide 7) */
+.soc-preview-card {
+    background: #0d1117;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    overflow: hidden;
+    height: 250px;
+    display: flex;
+    flex-direction: column;
+}
+
+.soc-header {
+    background: #161b22;
+    padding: 10px 15px;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.dot-red {
+    width: 10px;
+    height: 10px;
+    background: var(--accent-red);
+    border-radius: 50%;
+    animation: pulse 1.5s infinite;
+}
+
+.soc-title {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    font-weight: bold;
+}
+
+.soc-logs {
+    padding: 15px;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.8rem;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.log-line {
+    line-height: 1.4;
+}
+
+.log-time {
+    color: var(--text-muted);
+}
+
+.log-tag {
+    font-weight: bold;
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+.log-tag.red {
+    background: rgba(255, 123, 114, 0.1);
+    color: var(--accent-red);
+}
+
+.log-tag.yellow {
+    background: rgba(210, 153, 34, 0.1);
+    color: var(--accent-yellow);
+}
+
+/* Chart Panel (Slide 8) */
+.chart-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.bar-row {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    align-items: center;
+    gap: 15px;
+}
+
+.bar-label {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+.bar-container {
+    background: rgba(255, 255, 255, 0.05);
+    height: 24px;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.bar {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 12px;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.75rem;
+    font-weight: bold;
+    color: #fff;
+    border-radius: 12px;
+    animation: loadBar 1.2s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
+    width: 0%;
+}
+
+.bg-green { background: var(--accent-green); }
+.bg-blue { background: var(--accent-blue); }
+.bg-purple { background: var(--accent-purple); }
+.bg-gradient {
+    background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple));
+    box-shadow: 0 0 10px rgba(188, 140, 255, 0.3);
+}
+
+.highlight-row {
+    margin-top: 10px;
+    border-top: 1px solid var(--border-color);
+    padding-top: 15px;
+}
+
+/* Revenue details (Slide 9) */
+.revenue-item {
+    background: rgba(255, 255, 255, 0.01);
+    border-left: 4px solid var(--accent-green);
+    padding: 10px 15px;
+    border-radius: 0 8px 8px 0;
+}
+
+.rev-title {
+    font-size: 1rem;
+    font-weight: 600;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.rev-val {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: var(--accent-green);
+    display: block;
+    margin-bottom: 8px;
+}
+
+.revenue-item p {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    line-height: 1.4;
+}
+
+/* Final Slide (Slide 10) */
+.final-slide {
+    height: 100%;
+    justify-content: center;
+}
+
+.bullets-final {
+    margin: 30px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.bullets-final p {
+    font-size: 1.2rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.thanks-text {
+    font-size: 1.3rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+    margin-top: 20px;
+}
+
+.thanks-text strong {
+    color: var(--accent-blue);
+}
+
+/* Navigation controls */
+.nav-controls {
+    position: absolute;
+    bottom: -60px;
+    display: flex;
+    align-items: center;
+    gap: 25px;
+}
+
+.nav-btn {
+    background: #161b22;
+    border: 1px solid var(--border-color);
+    color: var(--text-main);
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.1rem;
+    transition: all 0.2s;
+}
+
+.nav-btn:hover {
+    border-color: var(--accent-blue);
+    background: rgba(88, 166, 255, 0.1);
+    color: var(--accent-blue);
+    box-shadow: 0 0 10px var(--accent-blue-glow);
+}
+
+.slide-counter {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.95rem;
+    color: var(--text-muted);
+}
+
+/* Helper styles */
+.text-red { color: var(--accent-red); }
+.text-green { color: var(--accent-green); }
+.text-blue { color: var(--accent-blue); }
+.text-yellow { color: var(--accent-yellow); }
+.text-purple { color: var(--accent-purple); }
+.font-bold { font-weight: bold; }
+.margin-top-20 { margin-top: 20px; }
+
+/* Animations */
+@keyframes pulse {
+    0% { opacity: 0.4; }
+    50% { opacity: 1; }
+    100% { opacity: 0.4; }
+}
+
+@keyframes loadBar {
+    from { width: 0%; }
+}

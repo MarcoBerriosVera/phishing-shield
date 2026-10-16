@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Phishing Shield — Sitio Bloqueado</title>
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self';">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg-dark: #090a0f;
+      --card-bg: rgba(17, 19, 24, 0.9);
+      --border-color: rgba(239, 68, 68, 0.2);
+      --border-soft: rgba(255, 255, 255, 0.08);
+      --text-main: #e8eaf0;
+      --text-muted: #6b7280;
+      --danger: #ef4444;
+      --danger-glow: rgba(239, 68, 68, 0.2);
+      --success: #10b981;
+      --warning: #f59e0b;
+      --accent: #3b82f6;
+    }
+
+    html, body {
+      min-height: 100vh;
+      width: 100%;
+      background: var(--bg-dark);
+      color: var(--text-main);
+      font-family: 'Outfit', sans-serif;
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding: 1.5rem 1rem;
+      position: relative;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(ellipse 60% 40% at 50% 30%, rgba(239, 68, 68, 0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .container {
+      margin: auto;
+      width: 100%;
+      max-width: 540px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      position: relative;
+      z-index: 1;
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 30px 24px;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
+    }
+
+    /* Gran Escudo de Alerta */
+    .shield-wrap {
+      position: relative;
+      width: 74px;
+      height: 74px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--danger-glow);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      border-radius: 50%;
+      box-shadow: 0 0 30px var(--danger-glow);
+    }
+
+    .shield-icon {
+      width: 36px;
+      height: 36px;
+      color: var(--danger);
+      filter: drop-shadow(0 0 8px var(--danger));
+      animation: pulse-danger 2.5s infinite;
+    }
+
+    @keyframes pulse-danger {
+      0%, 100% { transform: scale(1); filter: drop-shadow(0 0 8px var(--danger)); }
+      50% { transform: scale(1.05); filter: drop-shadow(0 0 16px var(--danger)); }
+    }
+
+    /* Cabecera del Aviso */
+    .header {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .brand-tag {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--danger);
+    }
+
+    .headline {
+      font-size: clamp(20px, 4.5vw, 25px);
+      font-weight: 700;
+      color: var(--text-main);
+      letter-spacing: -0.5px;
+    }
+
+    .subline {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.6;
+      max-width: 460px;
+      margin: 0 auto;
+    }
+
+    /* Tarjeta de la URL bloqueada */
+    .url-card {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border-soft);
+      border-radius: 14px;
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .url-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--danger);
+      flex-shrink: 0;
+    }
+
+    .url-details {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      overflow: hidden;
+    }
+
+    .url-label {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .url-value {
+      font-size: 13px;
+      color: var(--text-main);
+      word-break: break-all;
+      font-family: monospace;
+    }
+
+    /* Módulos de Análisis (Grid de microservicios amigable) */
+    .scores-grid {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        padding: 25px 20px;
+        border-radius: 20px;
+        gap: 20px;
+      }
+      .scores-grid { grid-template-columns: 1fr; }
+      .headline { font-size: 22px; }
+      .subline { font-size: 13px; }
+      .btn-main { height: 44px; font-size: 14px; }
+      .btn-secondary { height: 40px; font-size: 12px; }
+    }
+
+    .score-item {
+      background: rgba(255, 255, 255, 0.01);
+      border: 1px solid var(--border-soft);
+      border-radius: 12px;
+      padding: 12px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .score-name {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .score-val {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 20px;
+      letter-spacing: 0.5px;
+    }
+
+    .score-val.danger  { background: rgba(239, 68, 68, 0.15); color: var(--danger); }
+    .score-val.warning { background: rgba(245, 158, 11, 0.15); color: var(--warning); }
+    .score-val.safe    { background: rgba(16, 185, 129, 0.15); color: var(--success); }
+
+    /* Sección de Razones */
+    .reasons-box {
+      width: 100%;
+      background: rgba(239, 68, 68, 0.02);
+      border: 1px solid rgba(239, 68, 68, 0.15);
+      border-radius: 14px;
+      padding: 16px;
+    }
+
+    .reasons-title {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--danger);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 10px;
+    }
+
+    .reason-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .reason-list li {
+      font-size: 12px;
+      color: var(--text-main);
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+      line-height: 1.4;
+    }
+
+    .reason-list li::before {
+      content: '✕';
+      color: var(--danger);
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    /* Acciones */
+    .actions {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 5px;
+    }
+
+    .btn-main {
+      width: 100%;
+      height: 44px;
+      background: var(--danger);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
+    }
+
+    .btn-main:hover {
+      background: #dc2626;
+      box-shadow: 0 6px 16px rgba(239, 68, 68, 0.35);
+      transform: translateY(-1px);
+    }
+
+    .btn-main:active {
+      transform: translateY(1px);
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn-secondary {
+      flex: 1;
+      height: 40px;
+      background: rgba(255, 255, 255, 0.02);
+      color: var(--text-main);
+      border: 1px solid var(--border-soft);
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .btn-link {
+      width: 100%;
+      height: 36px;
+      background: transparent;
+      color: var(--text-muted);
+      border: none;
+      font-size: 11px;
+      font-weight: 500;
+      cursor: pointer;
+      text-decoration: underline;
+      transition: color 0.2s;
+    }
+
+    .btn-link:hover {
+      color: var(--danger);
+    }
+
+    .footer {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-align: center;
+    }
+
+    .footer a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .footer a:hover {
+      color: var(--accent);
+    }
+
+    .risk-badge {
+      font-size: 11px;
+      padding: 4px 12px;
+      border-radius: 20px;
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: var(--danger);
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .risk-badge .pulse-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--danger);
+      animation: blink-dot 1.2s infinite;
+    }
+
+    @keyframes blink-dot {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Icono Alerta -->
+    <div class="shield-wrap" aria-hidden="true">
+      <svg class="shield-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+        <line x1="12" y1="9" x2="12" y2="13"/>
+        <line x1="12" y1="17" x2="12.01" y2="17"/>
+      </svg>
+    </div>
+
+    <!-- Mensaje Principal -->
+    <header class="header">
+      <div style="display: flex; justify-content: center; margin-bottom: 12px;">
+        <img src="logo.png" style="height: 40px; width: auto; object-fit: contain;" alt="Phishing Shield Logo">
+      </div>
+      <h1 class="headline">Sitio Web Bloqueado</h1>
+      <p class="subline" id="sub-desc">
+        Esta página ha sido identificada como una amenaza de suplantación o phishing.
+        Para proteger tus credenciales y datos bancarios, el acceso ha sido restringido.
+      </p>
+    </header>
+
+    <!-- Indicador de Riesgo -->
+    <div class="risk-badge" aria-live="polite">
+      <span class="pulse-dot" aria-hidden="true"></span>
+      <span id="overall-score">Cargando nivel de riesgo...</span>
+    </div>
+
+    <!-- Detalle de URL bloqueada -->
+    <section class="url-card" aria-label="Información de URL">
+      <div class="url-icon" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="12" y1="8" x2="12" y2="12"/>
+          <line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+      </div>
+      <div class="url-details">
+        <span class="url-label">Enlace bloqueado</span>
+        <span class="url-value" id="blocked-url">—</span>
+      </div>
+    </section>
+
+    <!-- Módulos de Protección -->
+    <section class="scores-grid" id="scores-grid" aria-label="Resultados de los módulos de protección"></section>
+
+    <!-- Razones del Bloqueo -->
+    <section class="reasons-box" id="reasons-section" style="display: none;" aria-labelledby="reasons-title">
+      <h2 class="reasons-title" id="reasons-title">Causa detectada</h2>
+      <ul class="reason-list" id="reason-list"></ul>
+    </section>
+
+    <!-- Botones de Acción -->
+    <div class="actions">
+      <button class="btn-main" id="btn-back">← Salir de aquí (Recomendado)</button>
+      <button class="btn-secondary" id="btn-report" style="width: auto; min-width: 180px; margin: 0 auto; padding: 0 24px;">Reportar error</button>
+      <button class="btn-link" id="btn-proceed">Deseo continuar bajo mi propio riesgo (No recomendado)</button>
+    </div>
+
+    <!-- Traceback ID -->
+    <div style="font-size: 11px; color: var(--text-muted); margin-top: 5px; margin-bottom: 5px;" id="traceback-container">
+      Código de evento: <strong id="traceback-id" style="font-family: monospace; color: var(--text-main);">#PS-PENDIENTE</strong>
+    </div>
+
+    <!-- Pie de página -->
+    <footer class="footer">
+      Protegido por <strong>Phishing Shield</strong>
+    </footer>
+
+  </div>
+
+  <!-- Modal de confirmación personalizado -->
+  <div id="confirmModal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 2000; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(4px);">
+    <div style="background: #111318; border: 1px solid var(--border-color); border-radius: 16px; max-width: 400px; width: 100%; padding: 24px; display: flex; flex-direction: column; gap: 16px; box-shadow: 0 20px 40px rgba(0,0,0,0.6);">
+      <h3 style="color: var(--danger); font-size: 16px; font-weight: 700; display: flex; align-items: center; gap: 8px;">
+        ⚠️ Advertencia de Seguridad
+      </h3>
+      <p style="color: var(--text-main); font-size: 13px; line-height: 1.5;">
+        Este sitio ha sido calificado como fraudulento. Si continúas, podrías comprometer tus datos personales y cuentas.
+      </p>
+      <div style="display: flex; gap: 10px; margin-top: 10px;">
+        <button id="btnCancelProceed" style="flex: 1; height: 38px; background: rgba(255,255,255,0.05); border: 1px solid var(--border-soft); border-radius: 8px; color: var(--text-main); font-size: 12px; font-weight: 600; cursor: pointer;">Cancelar</button>
+        <button id="btnConfirmProceed" style="flex: 1; height: 38px; background: var(--danger); border: none; border-radius: 8px; color: white; font-size: 12px; font-weight: 600; cursor: pointer;">Continuar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de alerta personalizado (Reporte de error) -->
+  <div id="alertModal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 2000; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(4px);">
+    <div style="background: #111318; border: 1px solid var(--border-soft); border-radius: 16px; max-width: 400px; width: 100%; padding: 24px; display: flex; flex-direction: column; gap: 16px; box-shadow: 0 20px 40px rgba(0,0,0,0.6);">
+      <h3 style="color: var(--success); font-size: 16px; font-weight: 700; display: flex; align-items: center; gap: 8px;">
+        ✓ Reporte Enviado
+      </h3>
+      <p style="color: var(--text-main); font-size: 13px; line-height: 1.5;">
+        Gracias por reportar este falso positivo. Nuestro equipo de seguridad analizará el sitio web para verificarlo.
+      </p>
+      <button id="btnAlertOk" style="height: 38px; background: var(--success); border: none; border-radius: 8px; color: white; font-size: 12px; font-weight: 600; cursor: pointer; width: 100%;">Aceptar</button>
+    </div>
+  </div>
+
+  <script src="block.js"></script>
+</body>
+</html>

@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phishing Shield | Enterprise SOC</title>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; connect-src 'self' http://localhost:* http://127.0.0.1:* http://orchestrator:* ws://orchestrator:* http://*:* https://*:* ws://*:* wss://*:*;">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <!-- Chart.js and html2pdf.js CDNs -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+<body>
+    <div class="app-layout">
+        <!-- BARRA LATERAL (SIDEBAR) -->
+        <aside class="sidebar" role="navigation">
+            <div class="brand" style="display: flex; align-items: center; justify-content: center; padding-bottom: 20px; border-bottom: 1px solid var(--panel-border); margin-bottom: 8px;">
+                <img src="logo.png" style="max-height: 55px; width: auto; object-fit: contain;" alt="Phishing Shield Logo">
+            </div>
+
+            <nav class="sidebar-nav" style="margin-top: 10px;">
+                <button class="nav-item active" data-tab="tab-monitor">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+                    📡 Monitoreo Vivo
+                </button>
+                <button class="nav-item" data-tab="tab-logs">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+                    📋 Incident Logs
+                </button>
+                <button class="nav-item" data-tab="tab-whitelist">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                    🟢 Whitelist Central
+                </button>
+                <button class="nav-item" data-tab="tab-keys" style="display: none;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+                    🔑 API Keys
+                </button>
+                <button class="nav-item" data-tab="tab-reports" style="display: none;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                    💬 Reportes de Usuarios
+                </button>
+            </nav>
+
+            <div style="margin-top: auto; padding-top: 1.5rem; border-top: 1px solid var(--panel-border); font-size: 0.75rem; color: var(--text-muted); display: flex; flex-direction: column; gap: 8px;">
+                <div style="display: flex; align-items: center; gap: 6px;">
+                    <span class="status-indicator" id="sidebar-status-indicator" style="background: var(--success); box-shadow: 0 0 10px var(--success); width: 8px; height: 8px; border-radius: 50%; display: inline-block;"></span>
+                    <span class="status-text" id="sidebar-status-text" style="color: var(--success); font-weight: 600;">Protección Activa</span>
+                </div>
+                <p class="mono" style="font-size: 11px;">Orquestador: :8080</p>
+            </div>
+        </aside>
+
+        <!-- CONTENIDO PRINCIPAL -->
+        <div class="main-wrapper">
+            <header class="top-nav glass-panel" style="margin-bottom: 0;">
+                <h2 id="active-tab-title" style="font-size: 1.25rem; font-weight: 700; color: #fff; display: flex; align-items: center; gap: 8px;">📡 Monitoreo SOC</h2>
+                <div class="header-actions" style="display: flex; align-items: center; gap: 1rem;">
+                    <a class="btn-landing" id="btn-view-landing" href="landing.html" style="text-decoration: none; background: rgba(59, 130, 246, 0.12); border: 1px solid rgba(59, 130, 246, 0.35); border-radius: 8px; color: var(--text-main); padding: 6px 12px; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; gap: 6px; font-family: var(--font-ui);">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                        Ver Landing
+                    </a>
+                    <button class="btn-pdf-export" id="btn-export-pdf" style="display: none; align-items: center; gap: 8px; background: rgba(59, 130, 246, 0.15); border: 1px solid var(--brand-primary); border-radius: 8px; color: var(--text-main); padding: 6px 12px; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: all 0.3s; font-family: var(--font-ui);">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color: var(--brand-primary);"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                        Exportar Reporte PDF
+                    </button>
+                    <button class="btn-config" id="btn-autofill-demo" style="background: rgba(0, 229, 160, 0.15); border: 1px solid rgba(0, 229, 160, 0.35); border-radius: 8px; color: #00e5a0; padding: 6px 12px; font-size: 0.8rem; font-weight: 700; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; gap: 6px; font-family: var(--font-ui); box-shadow: 0 0 10px rgba(0, 229, 160, 0.15);">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                        Demo
+                    </button>
+                    <button class="btn-config" id="btn-config-server" style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 8px; color: var(--text-main); padding: 6px 12px; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; gap: 6px; font-family: var(--font-ui);">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#00e5a0" stroke-width="2.5"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                        Conexión
+                    </button>
+                </div>
+            </header>
+
+            <!-- PESTAÑA 1: MONITOREO VIVO -->
+            <div class="tab-panel active" id="tab-monitor">
+                <main class="dashboard-grid">
+            
+            <div class="col-left space-y">
+                <section class="glass-panel widget" aria-labelledby="title-intercept">
+                    <h2 class="widget-title" id="title-intercept">Interceptación Activa</h2>
+                    <div class="url-info">
+                        <div class="info-row">
+                            <span class="label">Target:</span>
+                            <span class="value mono text-danger" id="target-url">http://paypal-login-secure.verify-account.xyz/auth</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Dominio:</span>
+                            <span class="value mono" id="target-domain">verify-account.xyz</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Timestamp:</span>
+                            <span class="value mono" id="timestamp"></span>
+                        </div>
+                        <div class="status-bar-container" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                            <div class="status-bar" id="global-progress"></div>
+                        </div>
+                        <span class="status-label" id="global-status-text" aria-live="polite">Interceptando...</span>
+                    </div>
+                </section>
+
+                <section class="glass-panel widget" aria-labelledby="title-flow">
+                    <h2 class="widget-title" id="title-flow">Architecture Flow</h2>
+                    <div class="pipeline">
+                        <div class="node" id="node-ext">Chrome Ext (V3)</div>
+                        <div class="arrow" aria-hidden="true">↓</div>
+                        <div class="node" id="node-orch">Go Orchestrator (:8080)</div>
+                        <div class="arrow" aria-hidden="true">↓</div>
+                        <div class="parallel-nodes" id="node-micro">
+                            <div class="node mini">Heur</div>
+                            <div class="node mini">Simi</div>
+                            <div class="node mini">VT</div>
+                            <div class="node mini">ML</div>
+                            <div class="node mini">Vis</div>
+                        </div>
+                        <div class="arrow" aria-hidden="true">↓</div>
+                        <div class="node" id="node-risk">Risk Engine</div>
+                    </div>
+                </section>
+
+                <section class="glass-panel widget timeline-widget" aria-labelledby="title-timeline">
+                    <h2 class="widget-title" id="title-timeline">Execution Timeline</h2>
+                    <div class="timeline" id="execution-timeline" aria-live="polite"></div>
+                </section>
+            </div>
+
+            <div class="col-center space-y">
+                <!-- Gráfico de Radar de Firma de Amenaza -->
+                <section class="glass-panel widget" aria-labelledby="title-radar">
+                    <h2 class="widget-title" id="title-radar">Vector Threat Signature</h2>
+                    <div class="chart-container" style="position: relative; height: 320px; width: 100%; display: flex; align-items: center; justify-content: center; margin-top: 10px;">
+                        <canvas id="radarChart"></canvas>
+                    </div>
+                </section>
+
+                <section class="glass-panel widget" aria-labelledby="title-cluster">
+                    <div class="widget-header">
+                        <h2 class="widget-title" id="title-cluster">Docker Microservices Cluster</h2>
+                        <span class="badge online">5/5 Online</span>
+                    </div>
+                    
+                    <div class="microservices-grid">
+                        
+                        <article class="ms-card" id="ms-heur">
+                            <div class="ms-header">
+                                <h3>Heurísticas <span>:8081</span></h3>
+                                <span class="ms-status">Esperando</span>
+                            </div>
+                            <div class="ms-metrics">
+                                <div class="metric"><span class="mono ms-time">-- ms</span></div>
+                                <div class="metric">Score <span class="mono ms-score">--/25</span></div>
+                            </div>
+                            <div class="ms-progress-bg" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="ms-progress-fill"></div></div>
+                            <div class="ms-details hidden">
+                                <ul>
+                                    <li class="text-danger">✓ keywords en URL</li>
+                                    <li class="text-danger">✓ dominio excesivamente largo</li>
+                                    <li class="text-warning">✓ TLD sospechoso (.xyz)</li>
+                                </ul>
+                            </div>
+                        </article>
+
+                        <article class="ms-card" id="ms-simi">
+                            <div class="ms-header">
+                                <h3>Similitud Léxica <span>:8082</span></h3>
+                                <span class="ms-status">Esperando</span>
+                            </div>
+                            <div class="ms-metrics">
+                                <div class="metric"><span class="mono ms-time">-- ms</span></div>
+                                <div class="metric">Score <span class="mono ms-score">--/20</span></div>
+                            </div>
+                            <div class="ms-progress-bg" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="ms-progress-fill"></div></div>
+                            <div class="ms-details hidden">
+                                <p class="detail-text">Target: <span class="mono text-highlight">paypal-login.xyz</span></p>
+                                <p class="detail-text">Confianza: <span class="mono text-danger">96%</span></p>
+                            </div>
+                        </article>
+
+                        <article class="ms-card" id="ms-vt">
+                            <div class="ms-header">
+                                <h3>Reputación VT <span>:8083</span></h3>
+                                <span class="ms-status">Esperando</span>
+                            </div>
+                            <div class="ms-metrics">
+                                <div class="metric"><span class="mono ms-time">-- ms</span></div>
+                                <div class="metric">Score <span class="mono ms-score">--/25</span></div>
+                            </div>
+                            <div class="ms-progress-bg" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="ms-progress-fill"></div></div>
+                            <div class="ms-details hidden">
+                                <p class="detail-text">Motores: <span class="mono text-danger">58/97</span> positivos</p>
+                                <p class="detail-text text-warning">Detectado como Phishing/Malicious</p>
+                            </div>
+                        </article>
+
+                        <article class="ms-card" id="ms-ml">
+                            <div class="ms-header">
+                                <h3>Machine Learning <span>:8084</span></h3>
+                                <span class="ms-status">Esperando</span>
+                            </div>
+                            <div class="ms-metrics">
+                                <div class="metric"><span class="mono ms-time">-- ms</span></div>
+                                <div class="metric">Score <span class="mono ms-score">--/15</span></div>
+                            </div>
+                            <div class="ms-progress-bg" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="ms-progress-fill"></div></div>
+                            <div class="ms-details hidden">
+                                <p class="detail-text">Modelo: <span class="mono text-highlight">ONNX Random Forest</span></p>
+                                <p class="detail-text">Accuracy: <span class="mono">93.2%</span></p>
+                                <p class="detail-text">Probabilidad Phishing: <span class="mono text-danger">91%</span></p>
+                            </div>
+                        </article>
+
+                        <article class="ms-card" id="ms-vis">
+                            <div class="ms-header">
+                                <h3>Análisis Visual <span>:8085</span></h3>
+                                <span class="ms-status">Esperando</span>
+                            </div>
+                            <div class="ms-metrics">
+                                <div class="metric"><span class="mono ms-time">-- ms</span></div>
+                                <div class="metric">Score <span class="mono ms-score">--/15</span></div>
+                            </div>
+                            <div class="ms-progress-bg" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="ms-progress-fill"></div></div>
+                            <div class="ms-details hidden">
+                                <p class="detail-text">Algoritmo: <span class="mono">pHash Perceptual</span></p>
+                                <p class="detail-text">Similitud visual: <span class="mono text-danger">89%</span> (Paypal)</p>
+                            </div>
+                        </article>
+
+                    </div>
+                </section>
+            </div>
+
+            <div class="col-right space-y">
+                <section class="glass-panel widget center-text risk-widget" aria-labelledby="title-risk">
+                    <h2 class="widget-title" id="title-risk">Risk Engine Analysis</h2>
+                    <div class="gauge-container">
+                        <svg class="gauge-svg" viewBox="0 0 200 200" aria-hidden="true">
+                            <circle class="gauge-bg" cx="100" cy="100" r="80"></circle>
+                            <circle class="gauge-fill" cx="100" cy="100" r="80"></circle>
+                        </svg>
+                        <div class="gauge-center">
+                            <span class="gauge-value mono" id="final-score" aria-live="polite">0%</span>
+                            <span class="gauge-label" id="final-verdict">Analizando</span>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="glass-panel widget" aria-labelledby="title-verdict">
+                    <h2 class="widget-title" id="title-verdict">Veredicto Causal</h2>
+                    <div class="explanation-box" id="explanation-box" aria-live="assertive">
+                        <div class="spinner" aria-hidden="true"></div>
+                        <p class="wait-text">Aguardando telemetría de microservicios...</p>
+                    </div>
+                </section>
+
+                <section class="glass-panel widget" aria-labelledby="title-telemetry">
+                    <h2 class="widget-title" id="title-telemetry">Global Telemetry</h2>
+                    <div class="stats-grid">
+                        <div class="stat-box">
+                            <span class="stat-title">Analizadas</span>
+                            <span class="stat-value mono" id="stat-analyzed">14,208</span>
+                        </div>
+                        <div class="stat-box">
+                            <span class="stat-title text-success">Seguras</span>
+                            <span class="stat-value mono" id="stat-safe">13,902</span>
+                        </div>
+                        <div class="stat-box">
+                            <span class="stat-title text-warning">Sospechosas</span>
+                            <span class="stat-value mono" id="stat-suspicious">154</span>
+                        </div>
+                        <div class="stat-box">
+                            <span class="stat-title text-danger">Bloqueadas</span>
+                            <span class="stat-value mono" id="stat-blocked">152</span>
+                        </div>
+                    </div>
+                    <div class="perf-metric mt-3">
+                        <span class="label">Latencia Promedio Global:</span>
+                        <span class="value mono" id="avg-latency-val">187 ms</span>
+                    </div>
+                    <div class="perf-metric mt-1" style="margin-top: 6px;">
+                        <span class="label" style="color: #60a5fa;">Latencia P95 (Crítica):</span>
+                        <span class="value mono" id="latency-p95" style="color: #60a5fa; font-weight: 700;">--- ms</span>
+                    </div>
+                </section>
+
+                <!-- Historial de latencia en tiempo real -->
+                <section class="glass-panel widget">
+                    <h2 class="widget-title">SOC Latency Log (ms)</h2>
+                    <div class="chart-container" style="position: relative; height: 140px; width: 100%; margin-top: 10px;">
+                        <canvas id="trendChart"></canvas>
+                    </div>
+                </section>
+            </div>
+        </main>
+            </div>
+
+            <!-- PESTAÑA 2: INCIDENT LOGS -->
+            <div class="tab-panel" id="tab-logs">
+                <div class="admin-card">
+                    <div class="admin-header">
+                        <div>
+                            <h2 class="admin-title">Incident Audit Logs</h2>
+                            <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">Historial de enlaces interceptados y elusiones del Shield en tiempo real por la organización.</p>
+                        </div>
+                        <div class="admin-actions">
+                            <input type="text" id="logs-search" class="search-input" placeholder="Buscar por URL o IP...">
+                            <button type="button" class="btn-danger-outline" id="btn-clear-logs">Limpiar Auditoría</button>
+                        </div>
+                    </div>
+                    <div class="filter-bar">
+                        <button class="filter-btn active" data-filter="all">Todos</button>
+                        <button class="filter-btn" data-filter="success">Seguros</button>
+                        <button class="filter-btn" data-filter="warning">Sospechosos</button>
+                        <button class="filter-btn" data-filter="danger">Críticos</button>
+                    </div>
+                    <div class="table-container">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 120px;">ID Incidente</th>
+                                    <th style="width: 180px;">Fecha & Hora (UTC)</th>
+                                    <th style="width: 130px;">Dirección IP</th>
+                                    <th>URL Analizada</th>
+                                    <th style="width: 120px;">Veredicto</th>
+                                    <th style="width: 100px;">Riesgo</th>
+                                    <th style="width: 120px; text-align: center;">Eludido (Bypass)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="logs-table-body">
+                                <tr>
+                                    <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 30px;">
+                                        Aguardando conexión con el orquestador...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PESTAÑA 3: WHITELIST CENTRAL -->
+            <div class="tab-panel" id="tab-whitelist">
+                <div class="admin-card">
+                    <div class="admin-header">
+                        <div>
+                            <h2 class="admin-title">Lista de Exclusiones Central (Whitelist)</h2>
+                            <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">Dominios autorizados por la organización que eludirán el bloqueo de Phishing Shield de forma automática.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="grid-cols-2" style="display: grid; grid-template-columns: 350px 1fr; gap: 24px; align-items: start;">
+                        <div class="glass-panel" style="padding: 20px; background: rgba(255,255,255,0.01); border: 1px solid var(--panel-border); border-radius: 12px; display: flex; flex-direction: column; gap: 15px;">
+                            <h3 style="font-size: 0.9rem; font-weight: 600; color: #fff; display: flex; align-items: center; gap: 6px;">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                                Añadir Exclusión
+                            </h3>
+                            <div class="form-group-admin">
+                                <label for="whitelist-domain-input">Nombre de Dominio</label>
+                                <input type="text" id="whitelist-domain-input" class="form-input-admin" placeholder="ej. mi-banco-seguro.com">
+                            </div>
+                            <button type="button" class="btn-admin" id="btn-add-whitelist" style="width: 100%;">Añadir Exclusión</button>
+                        </div>
+                        
+                        <div class="table-container">
+                            <table class="admin-table">
+                                <thead>
+                                    <tr>
+                                        <th>Nombre del Dominio Autorizado</th>
+                                        <th style="width: 120px; text-align: center;">Acción</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="whitelist-table-body">
+                                    <tr>
+                                        <td colspan="2" style="text-align: center; color: var(--text-muted); padding: 30px;">
+                                            Cargando exclusiones del servidor...
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PESTAÑA 4: API KEYS -->
+            <div class="tab-panel" id="tab-keys">
+                <div class="admin-card">
+                    <div class="admin-header">
+                        <div>
+                            <h2 class="admin-title">Client API Keys (Tokens)</h2>
+                            <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">Gestión de llaves de acceso autorizadas para autenticar a los clientes y terminales corporativos finales.</p>
+                        </div>
+                    </div>
+
+                    <div class="grid-cols-2" style="display: grid; grid-template-columns: 350px 1fr; gap: 24px; align-items: start;">
+                        <div class="glass-panel" style="padding: 20px; background: rgba(255,255,255,0.01); border: 1px solid var(--panel-border); border-radius: 12px; display: flex; flex-direction: column; gap: 15px;">
+                            <h3 style="font-size: 0.9rem; font-weight: 600; color: #fff; display: flex; align-items: center; gap: 6px;">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--brand-primary)" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                                Generar Token Nuevo
+                            </h3>
+                            <div class="form-group-admin">
+                                <label for="key-desc-input">Descripción / Dispositivo</label>
+                                <input type="text" id="key-desc-input" class="form-input-admin" placeholder="ej. Laptop CISO - Marco">
+                            </div>
+                            <button type="button" class="btn-admin" id="btn-add-key" style="width: 100%;">Generar Llave</button>
+                        </div>
+                        
+                        <div class="table-container">
+                            <table class="admin-table">
+                                <thead>
+                                    <tr>
+                                        <th>Llave de Acceso (Client Token)</th>
+                                        <th>Dispositivo / Nota</th>
+                                        <th>Fecha de Creación</th>
+                                        <th style="width: 120px; text-align: center;">Acción</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="keys-table-body">
+                                    <tr>
+                                        <td colspan="4" style="text-align: center; color: var(--text-muted); padding: 30px;">
+                                            Cargando llaves activas...
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PESTAÑA 5: REPORTES DE USUARIOS -->
+            <div class="tab-panel" id="tab-reports">
+                <div class="admin-card">
+                    <div class="admin-header">
+                        <div>
+                            <h2 class="admin-title">Bandeja de Reportes de Usuarios (Falsos Positivos)</h2>
+                            <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">Auditoría y resolución de quejas de falsos positivos enviadas por usuarios desde la pantalla de bloqueo de la extensión.</p>
+                        </div>
+                    </div>
+
+                    <div class="table-container">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 120px;">ID Reporte</th>
+                                    <th style="width: 120px;">ID Incidente</th>
+                                    <th>URL Reportada</th>
+                                    <th style="width: 180px;">Fecha del Reporte</th>
+                                    <th style="width: 300px; text-align: center;">Acciones Rápidas</th>
+                                </tr>
+                            </thead>
+                            <tbody id="reports-table-body">
+                                <tr>
+                                    <td colspan="5" style="text-align: center; color: var(--text-muted); padding: 30px;">
+                                        Cargando reportes enviados...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- (Real-Time SOC Warnings) -->
+    <div id="soc-alerts-container" style="position: fixed; top: 20px; right: 20px; z-index: 10000; display: flex; flex-direction: column; gap: 10px; width: 350px; max-width: 90%;"></div>
+
+    <!-- Modal de Configuración de Servidor -->
+    <div class="modal-overlay" id="config-modal" style="position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); display: none; align-items: center; justify-content: center; z-index: 9999;">
+        <div class="modal-card" style="background: #111318; border: 1px solid rgba(255,255,255,0.08); border-radius: 20px; width: 90%; max-width: 450px; padding: 30px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); position: relative;">
+            <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 1rem; color: #fff; display: flex; align-items: center; gap: 8px;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00e5a0" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                Configurar Conexión SOC
+            </h3>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.5rem; line-height: 1.4;">
+                Conecta esta consola al servidor central de tu organización o clúster local de Phishing Shield.
+            </p>
+            <div style="display: flex; flex-direction: column; gap: 15px; margin-bottom: 25px;">
+                <div style="display: flex; flex-direction: column; gap: 6px;">
+                    <label style="font-size: 0.75rem; font-weight: 600; text-transform: uppercase; color: #6b7280; letter-spacing: 0.5px;">URL del Backend</label>
+                    <input type="url" id="modal-backend-url" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 10px 14px; color: #fff; font-size: 0.9rem; outline: none; transition: border-color 0.3s;" placeholder="http://localhost:8080">
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 6px;">
+                    <label style="font-size: 0.75rem; font-weight: 600; text-transform: uppercase; color: #6b7280; letter-spacing: 0.5px;">Client API Key (Token)</label>
+                    <input type="password" id="modal-client-key" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 10px 14px; color: #fff; font-size: 0.9rem; outline: none; transition: border-color 0.3s;" placeholder="Ingresa el token de cliente">
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 6px;">
+                    <label style="font-size: 0.75rem; font-weight: 600; text-transform: uppercase; color: #6b7280; letter-spacing: 0.5px;">Admin Token (para configuraciones)</label>
+                    <input type="password" id="modal-admin-token" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 10px 14px; color: #fff; font-size: 0.9rem; outline: none; transition: border-color 0.3s;" placeholder="Ingresa el token de administrador">
+                </div>
+            </div>
+            <div style="display: flex; justify-content: flex-end; gap: 12px; align-items: center;">
+                <button id="modal-btn-autofill" style="background: rgba(59, 130, 246, 0.15); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 10px; color: #60a5fa; padding: 10px 18px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.3s; margin-right: auto;">Autocompletar Demo</button>
+                <button id="modal-btn-close" style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 10px; color: #fff; padding: 10px 18px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.3s;">Cerrar</button>
+                <button id="modal-btn-save" style="background: #00e5a0; border: 1px solid #00e5a0; border-radius: 10px; color: #000; padding: 10px 22px; font-size: 0.85rem; font-weight: 700; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 10px rgba(0,229,160,0.25);">Guardar y Conectar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DE INVESTIGACIÓN DE INCIDENTE -->
+    <div class="modal" id="incident-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); z-index: 1000; align-items: center; justify-content: center;">
+        <div class="modal-card" style="background: #111318; border: 1px solid rgba(255,255,255,0.08); border-radius: 20px; width: 95%; max-width: 650px; padding: 30px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); position: relative; max-height: 85vh; overflow-y: auto;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.5rem;">
+                <div>
+                    <h3 style="font-size: 1.25rem; font-weight: 700; color: #fff; display: flex; align-items: center; gap: 8px;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00e5a0" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                        Investigación Forense SOC
+                    </h3>
+                    <span id="inc-modal-badge" class="ms-status" style="margin-top: 6px; display: inline-block;"></span>
+                </div>
+                <button id="inc-modal-btn-close" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; color: #fff; cursor: pointer; font-size: 1.1rem; line-height: 1; padding: 6px 12px; transition: all 0.2s;">×</button>
+            </div>
+
+            <!-- DETALLES BÁSICOS -->
+            <div class="glass-panel" style="padding: 16px; margin-bottom: 20px; background: rgba(255,255,255,0.01); border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; font-size: 0.8rem;">
+                <div style="grid-column: span 2;">
+                    <strong style="color: var(--text-muted); display: block; font-size: 0.7rem; text-transform: uppercase; margin-bottom: 2px;">URL Analizada</strong>
+                    <span id="inc-modal-url" class="mono" style="word-break: break-all; color: #fff; font-size: 0.8rem; line-height: 1.4;"></span>
+                </div>
+                <div>
+                    <strong style="color: var(--text-muted); display: block; font-size: 0.7rem; text-transform: uppercase; margin-bottom: 2px;">Dirección IP</strong>
+                    <span id="inc-modal-ip" class="mono" style="color: #fff; font-size: 0.8rem;"></span>
+                </div>
+                <div>
+                    <strong style="color: var(--text-muted); display: block; font-size: 0.7rem; text-transform: uppercase; margin-bottom: 2px;">ID del Incidente</strong>
+                    <span id="inc-modal-id" class="mono" style="color: #fff; font-size: 0.8rem;"></span>
+                </div>
+                <div>
+                    <strong style="color: var(--text-muted); display: block; font-size: 0.7rem; text-transform: uppercase; margin-bottom: 2px;">Fecha & Hora (Local)</strong>
+                    <span id="inc-modal-time" style="color: #fff; font-size: 0.8rem;"></span>
+                </div>
+                <div>
+                    <strong style="color: var(--text-muted); display: block; font-size: 0.7rem; text-transform: uppercase; margin-bottom: 2px;">Bypass (Eludido)</strong>
+                    <span id="inc-modal-bypassed" class="ms-status" style="display: inline-block; padding: 2px 8px; font-size: 0.7rem;"></span>
+                </div>
+            </div>
+
+            <!-- DESGLOSE DE MICROSERVICIOS -->
+            <h4 style="font-size: 0.85rem; font-weight: 700; color: #fff; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 0.5px; border-left: 3px solid var(--brand-primary); padding-left: 8px;">Vectores de Análisis de Microservicios</h4>
+            <div id="inc-modal-services" style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 25px;">
+                <!-- Se llenará dinámicamente -->
+            </div>
+
+
+            <div style="display: flex; justify-content: flex-end; gap: 12px; align-items: center; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 20px;">
+                <button id="inc-modal-btn-whitelist" style="background: rgba(0, 229, 160, 0.15); border: 1px solid rgba(0, 229, 160, 0.3); border-radius: 10px; color: #00e5a0; padding: 10px 20px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; gap: 6px; margin-right: auto;">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                    Añadir a Whitelist
+                </button>
+                <button id="inc-modal-btn-close-bottom" style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 10px; color: #fff; padding: 10px 22px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.3s;">Cerrar Informe</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

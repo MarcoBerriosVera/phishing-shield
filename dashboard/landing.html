@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phishing Shield | Suite de Detección Proactiva contra Phishing</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="landing.css">
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <header class="navbar-container">
+        <div class="navbar glass">
+            <div class="logo-area">
+                <img src="logo.png" alt="Phishing Shield Logo" style="height: 38px; width: auto; object-fit: contain;">
+            </div>
+            <nav class="nav-links">
+                <a href="#inicio">Inicio</a>
+                <a href="#motores">Motores de Análisis</a>
+                <a href="#cumplimiento">Leyes y Cumplimiento</a>
+                <a href="#planes">Planes</a>
+                <a href="#descargas">Descargas</a>
+            </nav>
+            <div class="cta-area">
+                <a href="index.html" class="btn btn-neon-blue nav-cta">Acceso Consola SOC</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTAINER -->
+    <main>
+        
+        <!-- HERO SECTION -->
+        <section id="inicio" class="hero-section">
+            <div class="container hero-grid">
+                <div class="hero-content">
+                    <div class="badge neon-text-green">🛡️ DETECCIÓN ACTIVA MULTICAPA</div>
+                    <h1>Protección contra Phishing Inteligente en Tiempo Real</h1>
+                    <p class="hero-description">
+                         Protege tu organización y colaboradores interceptando URLs en tiempo real antes de la navegación. Cumplimiento normativo automatizado con la <strong>Ley de Delitos Informáticos N° 21.113</strong> y la <strong>Ley Marco de Ciberseguridad N° 21.663</strong> en Chile.
+                    </p>
+                    <div class="hero-actions">
+                        <a href="index.html" class="btn btn-neon-green btn-large glow-green">Acceder a Consola SOC</a>
+                        <a href="../releases/phishing_shield_extension_v1.0.zip" class="btn btn-outline btn-large">Descargar Extensión v1.0</a>
+                    </div>
+                    <div class="hero-features-list">
+                        <div class="feat-item"><span class="icon">⚡</span> Latencia &lt; 200ms</div>
+                        <div class="feat-item"><span class="icon">⚖️</span> Cumplimiento Legal Integrado</div>
+                        <div class="feat-item"><span class="icon">🔑</span> Bóveda Zero-Knowledge</div>
+                    </div>
+                </div>
+                
+                <div class="hero-graphic">
+                    <div class="cyber-extension-wrapper">
+                        <!-- Representación en CSS/HTML de la extensión bloqueando una URL de Phishing -->
+                        <div class="mock-browser glass">
+                            <div class="browser-header">
+                                <div class="browser-buttons">
+                                    <span></span><span></span><span></span>
+                                </div>
+                                <div class="browser-address-bar">
+                                    <span class="lock-icon">🔒</span>
+                                    <span class="url-text text-danger">paypal-secure-verify.xyz/login</span>
+                                </div>
+                            </div>
+                            <div class="browser-body">
+                                <div class="shield-blocking-overlay">
+                                    <div class="shield-logo-pulse" style="width: auto; height: 75px; filter: drop-shadow(0 0 15px rgba(0, 229, 160, 0.4));">
+                                        <img src="logo.png" style="height: 100%; width: auto; object-fit: contain;" alt="Phishing Shield Logo">
+                                    </div>
+                                    <h3 class="neon-text-red">¡ACCESO BLOQUEADO!</h3>
+                                    <p class="blocking-desc">Phishing Shield ha detectado una suplantación de identidad activa.</p>
+                                    <div class="blocking-metrics">
+                                        <div class="metric-item">
+                                            <span class="metric-label">Riesgo</span>
+                                            <span class="metric-val text-danger">91%</span>
+                                        </div>
+                                        <div class="metric-item">
+                                            <span class="metric-label">Similitud Visual</span>
+                                            <span class="metric-val text-danger">89%</span>
+                                        </div>
+                                        <div class="metric-item">
+                                            <span class="metric-label">Estado</span>
+                                            <span class="metric-val text-danger">Bloqueado</span>
+                                        </div>
+                                    </div>
+                                    <div class="blocking-actions">
+                                        <button class="btn btn-neon-blue btn-small">Volver a la Seguridad</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pulse-flow-lines"></div>
+                        <div class="glow-shadow"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- COMPONENT MOTORES -->
+        <section id="motores" class="components-section">
+            <div class="container">
+                <div class="section-header text-center">
+                    <h2 class="section-title">Análisis de <span class="neon-text-blue">Cinco Motores Concurrentes</span></h2>
+                    <p class="section-subtitle">Nuestra extensión e infraestructura Docker colaboran en paralelo para resolver veredictos de seguridad en milisegundos.</p>
+                </div>
+                
+                <div class="components-grid">
+                    <!-- Heuristics -->
+                    <div class="component-card glass hover-glow-blue">
+                        <div class="card-icon blue-bg">⚡</div>
+                        <h3>Heurísticas de URL</h3>
+                        <p class="card-tag">Análisis Estructural</p>
+                        <p class="card-desc">
+                            Inspecciona la composición de subdominios sospechosos, longitud extrema de URL, ausencia de HTTPS y patrones comunes utilizados por atacantes.
+                        </p>
+                        <ul class="card-bullets">
+                            <li>Detección estática inmediata</li>
+                            <li>Exclusión de dominios de confianza</li>
+                            <li>Baja carga computacional</li>
+                        </ul>
+                    </div>
+
+                    <!-- Similarity -->
+                    <div class="component-card glass hover-glow-blue">
+                        <div class="card-icon blue-bg">⚖️</div>
+                        <h3>Similitud Léxica</h3>
+                        <p class="card-tag">Detección de Typosquatting</p>
+                        <p class="card-desc">
+                            Compara en caliente el dominio con marcas reales mediante el algoritmo de distancia de Levenshtein para identificar variaciones tipográficas maliciosas.
+                        </p>
+                        <ul class="card-bullets">
+                            <li>Protección contra suplantación</li>
+                            <li>Base de datos de marcas integrada</li>
+                            <li>Evita redirecciones confusas</li>
+                        </ul>
+                    </div>
+
+                    <!-- Reputation -->
+                    <div class="component-card glass hover-glow-blue">
+                        <div class="card-icon blue-bg">🛡️</div>
+                        <h3>Reputación Global</h3>
+                        <p class="card-tag">Integración con VirusTotal v3</p>
+                        <p class="card-desc">
+                            Consulta a más de 90 motores de reputación globales mediante APIs cifradas asíncronas, acelerado por una lista negra local de phishing verificado.
+                        </p>
+                        <ul class="card-bullets">
+                            <li>Base de amenazas global activa</li>
+                            <li>Cacheo inteligente de consultas</li>
+                            <li>API Key cifrada en contenedores</li>
+                        </ul>
+                    </div>
+
+                    <!-- Machine Learning -->
+                    <div class="component-card glass hover-glow-green">
+                        <div class="card-icon green-bg">🤖</div>
+                        <h3>Machine Learning (ONNX)</h3>
+                        <p class="card-tag">Inferencia con Random Forest</p>
+                        <p class="card-desc">
+                            Inferencia local instantánea mediante un modelo Random Forest entrenado con el dataset público PhishStorm (más de 95,000 registros) y empaquetado en formato ONNX.
+                        </p>
+                        <ul class="card-bullets">
+                            <li>93.2% de precisión en inferencia</li>
+                            <li>Verificación automática de firma de modelo</li>
+                            <li>FastAPI asíncrono en Python</li>
+                        </ul>
+                    </div>
+
+                    <!-- Visual matching -->
+                    <div class="component-card glass hover-glow-green" style="grid-column: span 2;">
+                        <div class="card-icon green-bg">👁️</div>
+                        <h3>Análisis Visual Perceptual (pHash Local)</h3>
+                        <p class="card-tag">Verificación Local de Logos</p>
+                        <p class="card-desc">
+                            Novedoso sistema que reduce la latencia de análisis visual a cero: la extensión realiza una captura de pantalla local de la pestaña activa (`captureVisibleTab`), calcula su hash perceptual de imagen mediante `OffscreenCanvas` y `createImageBitmap` directamente en el Service Worker de Chrome, y el servidor valida si imita la firma de marcas reales con un umbral de Hamming de &le; 8.
+                        </p>
+                        <ul class="card-bullets">
+                            <li>Sin latencias de navegadores headless en el backend</li>
+                            <li>Privacidad garantizada (análisis en memoria local)</li>
+                            <li>Detección directa de logotipos protegidos</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- COMPLIANCE SECTION -->
+        <section id="cumplimiento" class="compliance-section">
+            <div class="container">
+                <div class="compliance-grid">
+                    <div class="compliance-graphic">
+                        <div class="law-document-glass glass">
+                            <div class="doc-header">
+                                <span class="doc-badge">DOCUMENTO LEGAL</span>
+                                <h3>CONGRESO NACIONAL DE CHILE</h3>
+                            </div>
+                            <div class="doc-body">
+                                <h4 class="neon-text-blue">LEY N° 21.663</h4>
+                                <p><strong>Ley Marco de Ciberseguridad:</strong> Exige a las empresas y operadores de infraestructura crítica la implementación de medidas de seguridad proactivas contra incidentes cibernéticos.</p>
+                                <hr style="border-color: var(--panel-border); margin: 15px 0;">
+                                <h4 class="neon-text-blue">LEY N° 21.113</h4>
+                                <p><strong>Delitos Informáticos:</strong> Tipifica y sanciona penalmente conductas como el acceso ilícito, sabotaje informático y el fraude por suplantación (phishing).</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="compliance-content">
+                        <div class="badge neon-text-blue">⚖️ CUMPLIMIENTO NORMAS CHILENAS</div>
+                        <h2>Alineado con el Marco Legal Vigente</h2>
+                        <p class="compliance-desc">
+                            Las nuevas normativas chilenas de ciberseguridad exigen a las organizaciones implementar controles activos en sus puntos de acceso. Phishing Shield te ayuda a automatizar el cumplimiento:
+                        </p>
+                        <div class="compliance-features">
+                            <div class="c-feat">
+                                <div class="c-icon">✓</div>
+                                <div>
+                                    <h4>Auditoría Completa de Incidentes</h4>
+                                    <p>Registra en una bitácora local todos los eventos de detección, bloqueos y excepciones (bypass) del personal.</p>
+                                </div>
+                            </div>
+                            <div class="c-feat">
+                                <div class="c-icon">✓</div>
+                                <div>
+                                    <h4>Mitigación Inmediata de Riesgos</h4>
+                                    <p>Bloquea amenazas a nivel corporativo antes de que la navegación se concrete, mitigando el robo de credenciales.</p>
+                                </div>
+                            </div>
+                            <div class="c-feat">
+                                <div class="c-icon">✓</div>
+                                <div>
+                                    <h4>Cumplimiento NIST CSF 2.0 y ISO 27001</h4>
+                                    <p>Proporciona los controles de seguridad necesarios en la categoría de protección de datos e infraestructura.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PLANS SECTION -->
+        <section id="planes" class="planes-section">
+            <div class="container">
+                <div class="section-header text-center">
+                    <h2 class="section-title">Modelos y Planes de Licenciamiento</h2>
+                    <p class="section-subtitle">Protección flexible adaptada al tamaño y requerimientos de tu organización.</p>
+                </div>
+                
+                <div class="planes-grid">
+                    <!-- Plan 1 -->
+                    <div class="plan-card glass">
+                        <h3>Plan Básico / Personal</h3>
+                        <p class="plan-subtitle">Ideal para usuarios individuales o pruebas iniciales.</p>
+                        <div class="price">
+                            <span class="currency">CLP</span>
+                            <span class="amount">0</span>
+                            <span class="period">/ por siempre</span>
+                        </div>
+                        <ul class="plan-features">
+                            <li>✓ Extensión de Chrome Manifest V3</li>
+                            <li>✓ Análisis heurístico y similitud local</li>
+                            <li>✓ Reputación VirusTotal (modo degradado)</li>
+                            <li>✓ Bóveda de contraseñas local cifrada</li>
+                            <li>✗ Consola SOC centralizada</li>
+                            <li>✗ Reportes de incidentes corporativos</li>
+                        </ul>
+                        <a href="../releases/phishing_shield_extension_v1.0.zip" class="btn btn-outline" style="width: 100%; margin-top: 20px;">Instalar Gratis</a>
+                    </div>
+
+                    <!-- Plan 2 -->
+                    <div class="plan-card glass featured">
+                        <div class="featured-badge">RECOMENDADO</div>
+                        <h3>Enterprise SOC (SaaS)</h3>
+                        <p class="plan-subtitle">Para empresas que requieren monitoreo unificado y cumplimiento legal.</p>
+                        <div class="price">
+                            <span class="currency">CLP</span>
+                            <span class="amount">150.000</span>
+                            <span class="period">/ mes por cliente</span>
+                        </div>
+                        <ul class="plan-features">
+                            <li>✓ Todo lo del plan Básico</li>
+                            <li>✓ Conexión en tiempo real a Consola SOC (WebSockets)</li>
+                            <li>✓ Claves de API corporativas ilimitadas</li>
+                            <li>✓ Base de reputación VirusTotal completa</li>
+                            <li>✓ Inferencia local con IA (ONNX) activa</li>
+                            <li>✓ Lista de exclusiones centralizada (Whitelist)</li>
+                            <li>✓ Exportación de reportes de incidentes a PDF</li>
+                        </ul>
+                        <a href="index.html" class="btn btn-neon-green glow-green" style="width: 100%; margin-top: 20px;">Iniciar Demo Enterprise</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- DOWNLOADS SECTION -->
+        <section id="descargas" class="downloads-section text-center">
+            <div class="container">
+                <div class="downloads-box glass">
+                    <h2 class="section-title">Comienza a Proteger tu Red Hoy</h2>
+                    <p class="section-subtitle" style="margin-bottom: 30px;">Descarga la extensión o accede directamente a la demo interactiva del centro de operaciones de seguridad.</p>
+                    <div class="downloads-actions" style="display: flex; justify-content: center; gap: 20px;">
+                        <a href="../releases/phishing_shield_extension_v1.0.zip" class="btn btn-neon-blue btn-large glow-blue">Descargar Extensión (.zip)</a>
+                        <a href="../releases/manual_phishing_shield.pdf" class="btn btn-outline btn-large" target="_blank">Manual de Instalación (PDF)</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="footer-container">
+        <div class="container footer-content text-center">
+            <p>&copy; 2026 Phishing Shield — Proyecto de Título. Todos los derechos reservados.</p>
+            <p style="color: var(--text-muted); font-size: 0.8rem; margin-top: 8px;">CFT Estatal de la Región de Valparaíso — Carrera Técnico Nivel Superior en Informática Mención Ciberseguridad.</p>
+        </div>
+    </footer>
+
+    <script src="landing.js"></script>
+</body>
+</html>

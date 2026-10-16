@@ -1,0 +1,5 @@
+fastapi==0.111.0
+uvicorn==0.30.1
+playwright==1.44.0
+pillow==10.3.0
+imagehash==4.3.1

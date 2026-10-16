@@ -1,0 +1,57 @@
+version: '3.8'
+
+networks:
+  shield-net:
+    driver: bridge
+
+volumes:
+  orchestrator-data:
+
+services:
+  orchestrator:
+    build: ../orchestrator
+    ports:
+      - "8080:8080"
+    environment:
+      - ADMIN_TOKEN=${ADMIN_TOKEN}
+      - CLIENT_API_KEYS=${CLIENT_API_KEYS:-}
+      - VIRUSTOTAL_API_KEY=${VIRUSTOTAL_API_KEY}
+      - DEMO_MODE=${DEMO_MODE:-false}
+      - DATA_DIR=/data
+    volumes:
+      - orchestrator-data:/data
+    depends_on:
+      - heuristics
+      - similarity
+      - reputation
+      - ml
+      - visual
+    networks:
+      - shield-net
+
+  heuristics:
+    build: ../services/heuristics
+    networks:
+      - shield-net
+
+  similarity:
+    build: ../services/similarity
+    networks:
+      - shield-net
+
+  reputation:
+    build: ../services/reputation
+    environment:
+      - VIRUSTOTAL_API_KEY=${VIRUSTOTAL_API_KEY}
+    networks:
+      - shield-net
+
+  ml:
+    build: ../services/ml
+    networks:
+      - shield-net
+
+  visual:
+    build: ../services/visual
+    networks:
+      - shield-net

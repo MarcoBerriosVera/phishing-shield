@@ -1,0 +1,207 @@
+#phishing-shield-toast {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 999999;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  animation: psSlideIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  max-width: 320px;
+  min-width: 280px;
+}
+
+@keyframes psSlideIn {
+  from { opacity: 0; transform: translateX(30px) scale(0.95); }
+  to   { opacity: 1; transform: translateX(0) scale(1); }
+}
+
+@keyframes psPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255,68,85,0.4); }
+  50% { box-shadow: 0 0 0 8px rgba(255,68,85,0); }
+}
+
+@keyframes psSpin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+#phishing-shield-toast .ps-card {
+  background: #0f1117;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 4px 16px rgba(0,0,0,0.3);
+}
+
+#phishing-shield-toast .ps-bar {
+  height: 3px;
+  width: 100%;
+}
+
+#phishing-shield-toast .ps-body {
+  padding: 14px 16px;
+}
+
+#phishing-shield-toast .ps-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+#phishing-shield-toast .ps-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+#phishing-shield-toast .ps-close {
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  background: rgba(255,255,255,0.06);
+  border: none;
+  color: #5a5f72;
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+}
+
+#phishing-shield-toast .ps-close:hover {
+  background: rgba(255,255,255,0.12);
+  color: #e8eaf0;
+}
+
+#phishing-shield-toast .ps-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #e8eaf0;
+  margin-bottom: 3px;
+}
+
+#phishing-shield-toast .ps-subtitle {
+  font-size: 11px;
+  color: #5a5f72;
+}
+
+#phishing-shield-toast .ps-url {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 8px;
+  padding: 7px 10px;
+  margin-top: 10px;
+  font-size: 10px;
+  font-family: 'Courier New', monospace;
+  color: #5a5f72;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#phishing-shield-toast .ps-score-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 10px;
+  padding: 8px 10px;
+  border-radius: 8px;
+}
+
+#phishing-shield-toast .ps-score-label {
+  font-size: 11px;
+  font-weight: 500;
+}
+
+#phishing-shield-toast .ps-score-val {
+  font-size: 13px;
+  font-weight: 700;
+  font-family: 'Courier New', monospace;
+}
+
+#phishing-shield-toast .ps-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(77,159,255,0.3);
+  border-top-color: #4d9fff;
+  border-radius: 50%;
+  animation: psSpin 0.8s linear infinite;
+  display: inline-block;
+}
+
+/* Estados */
+#phishing-shield-toast.ps-analyzing .ps-card {
+  border: 1px solid rgba(77,159,255,0.25);
+}
+#phishing-shield-toast.ps-analyzing .ps-bar {
+  background: linear-gradient(90deg, transparent, #4d9fff, transparent);
+  background-size: 200% 100%;
+  animation: psShimmer 1.5s infinite;
+}
+@keyframes psShimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+#phishing-shield-toast.ps-analyzing .ps-badge {
+  background: rgba(77,159,255,0.12);
+  color: #4d9fff;
+  border: 1px solid rgba(77,159,255,0.2);
+}
+
+#phishing-shield-toast.ps-safe .ps-card {
+  border: 1px solid rgba(0,229,160,0.25);
+}
+#phishing-shield-toast.ps-safe .ps-bar {
+  background: linear-gradient(90deg, transparent, #00e5a0, transparent);
+}
+#phishing-shield-toast.ps-safe .ps-badge {
+  background: rgba(0,229,160,0.12);
+  color: #00e5a0;
+  border: 1px solid rgba(0,229,160,0.2);
+}
+#phishing-shield-toast.ps-safe .ps-score-row {
+  background: rgba(0,229,160,0.08);
+}
+#phishing-shield-toast.ps-safe .ps-score-label { color: #00e5a0; }
+#phishing-shield-toast.ps-safe .ps-score-val { color: #00e5a0; }
+
+#phishing-shield-toast.ps-suspicious .ps-card {
+  border: 1px solid rgba(245,166,35,0.3);
+}
+#phishing-shield-toast.ps-suspicious .ps-bar {
+  background: linear-gradient(90deg, transparent, #f5a623, transparent);
+}
+#phishing-shield-toast.ps-suspicious .ps-badge {
+  background: rgba(245,166,35,0.12);
+  color: #f5a623;
+  border: 1px solid rgba(245,166,35,0.2);
+}
+#phishing-shield-toast.ps-suspicious .ps-score-row {
+  background: rgba(245,166,35,0.08);
+}
+#phishing-shield-toast.ps-suspicious .ps-score-label { color: #f5a623; }
+#phishing-shield-toast.ps-suspicious .ps-score-val { color: #f5a623; }
+
+#phishing-shield-toast.ps-danger .ps-card {
+  border: 1px solid rgba(255,68,85,0.4);
+  animation: psPulse 2s infinite;
+}
+#phishing-shield-toast.ps-danger .ps-bar {
+  background: linear-gradient(90deg, transparent, #ff4455, transparent);
+}
+#phishing-shield-toast.ps-danger .ps-badge {
+  background: rgba(255,68,85,0.15);
+  color: #ff4455;
+  border: 1px solid rgba(255,68,85,0.3);
+}
+#phishing-shield-toast.ps-danger .ps-score-row {
+  background: rgba(255,68,85,0.08);
+}
+#phishing-shield-toast.ps-danger .ps-score-label { color: #ff4455; }
+#phishing-shield-toast.ps-danger .ps-score-val { color: #ff4455; }

@@ -1,0 +1,10 @@
+paypal.com|f273d0dac2708cdc
+google.com|f46455d159dd5464
+facebook.com|b838c783785e9cb1
+santander.cl|8f0f38fcc7c0e0c3
+bci.cl|b03898ccccecc7c7
+falabella.com|e7b08885e44abe67
+mercadolibre.cl|a70f0f07270f0f27
+bancoestado.cl|820202226bfbffdd
+microsoft.com|9113ee6cb1d39293
+amazon.com|b33333888ececc66

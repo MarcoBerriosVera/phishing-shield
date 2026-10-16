@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Configuración de Phishing Shield</title>
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self'; connect-src 'self' http://localhost:* http://127.0.0.1:* http://* https://* ws://* wss://*;">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #090a0f;
+      --panel-bg: rgba(17, 19, 24, 0.85);
+      --border-color: rgba(255, 255, 255, 0.08);
+      --text-main: #e8eaf0;
+      --text-muted: #6b7280;
+      --success: #10b981;
+      --success-glow: rgba(16, 185, 129, 0.15);
+      --warning: #f59e0b;
+      --warning-glow: rgba(245, 158, 11, 0.15);
+      --danger: #ef4444;
+      --danger-glow: rgba(239, 68, 68, 0.15);
+      --accent: #3b82f6;
+      --accent-glow: rgba(59, 130, 246, 0.25);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Outfit', sans-serif;
+    }
+
+    body {
+      background: var(--bg-dark);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .options-card {
+      background: var(--panel-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 24px;
+      width: 100%;
+      max-width: 500px;
+      padding: 40px 30px;
+      backdrop-filter: blur(20px);
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
+      position: relative;
+    }
+
+    .options-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 10%;
+      right: 10%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 30px;
+    }
+
+    .logo-icon {
+      width: 32px;
+      height: 32px;
+      color: var(--accent);
+    }
+
+    h1 {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      background: linear-gradient(90deg, #fff, #a3b3cc);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .subtitle {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 25px;
+      line-height: 1.5;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    label {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+    }
+
+    input {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 12px 16px;
+      color: var(--text-main);
+      font-size: 14px;
+      outline: none;
+      transition: all 0.3s;
+    }
+
+    input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 15px var(--accent-glow);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .button-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      margin-top: 30px;
+    }
+
+    button {
+      padding: 12px 20px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      outline: none;
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: var(--text-muted);
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      border: 1px solid var(--accent);
+      color: #ffffff;
+      box-shadow: 0 5px 15px rgba(59, 130, 246, 0.3);
+    }
+
+    .btn-primary:hover {
+      background: #2563eb;
+      box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
+      transform: translateY(-1px);
+    }
+
+    .status-panel {
+      margin-top: 25px;
+      padding: 16px;
+      border-radius: 14px;
+      border: 1px solid var(--border-color);
+      background: rgba(255, 255, 255, 0.01);
+      display: none;
+      align-items: center;
+      gap: 12px;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .status-panel.success {
+      display: flex;
+      background: var(--success-glow);
+      border-color: rgba(16, 185, 129, 0.2);
+    }
+
+    .status-panel.success .status-icon {
+      color: var(--success);
+    }
+
+    .status-panel.error {
+      display: flex;
+      background: var(--danger-glow);
+      border-color: rgba(239, 68, 68, 0.2);
+    }
+
+    .status-panel.error .status-icon {
+      color: var(--danger);
+    }
+
+    .status-icon {
+      width: 24px;
+      height: 24px;
+      flex-shrink: 0;
+    }
+
+    .status-text h4 {
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+
+    .status-text p {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .success .status-text p {
+      color: rgba(16, 185, 129, 0.8);
+    }
+
+    .error .status-text p {
+      color: rgba(239, 68, 68, 0.8);
+    }
+  </style>
+</head>
+<body>
+  <div class="options-card">
+    <div class="header" style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+      <img src="logo.png" style="height: 38px; width: auto; object-fit: contain;" alt="Phishing Shield Logo">
+      <h1>Configuración Corporativa</h1>
+    </div>
+    
+    <p class="subtitle">
+      Configura la infraestructura de backend de Phishing Shield para tu organización. Puedes apuntar a tu clúster On-Premise o a la nube SaaS.
+    </p>
+
+    <div class="form-group">
+      <label for="backendUrl">URL del Servidor Backend</label>
+      <input type="url" id="backendUrl" placeholder="http://localhost:8080" required>
+    </div>
+
+    <div class="form-group">
+      <label for="clientKey">Client API Key (Token)</label>
+      <input type="password" id="clientKey" placeholder="Ingresa tu token de cliente" required>
+    </div>
+
+    <div class="form-group">
+      <label for="adminToken">Admin Token <span style="color:var(--warning);font-size:10px;text-transform:none;letter-spacing:0">(opcional — solo administradores)</span></label>
+      <input type="password" id="adminToken" placeholder="Token de administrador del servidor">
+    </div>
+
+    <div class="status-panel" id="statusPanel">
+      <svg class="status-icon" id="statusIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></svg>
+      <div class="status-text">
+        <h4 id="statusTitle">Estado de Conexión</h4>
+        <p id="statusDesc">Descripción del resultado</p>
+      </div>
+    </div>
+
+    <div class="button-group">
+      <button type="button" class="btn-secondary" id="btnAutofillDemo" style="background: rgba(0, 229, 160, 0.15); border: 1px solid rgba(0, 229, 160, 0.35); color: #00e5a0; margin-right: auto; padding: 10px 14px; font-weight: bold;">Autocompletar Demo</button>
+      <button type="button" class="btn-secondary" id="btnTest">Probar Conexión</button>
+      <button type="button" class="btn-primary" id="btnSave">Guardar</button>
+    </div>
+
+    <div style="margin-top: 15px; display: none;" id="dashboardBtnContainer">
+      <button type="button" class="btn-primary" id="btnDashboard" style="width: 100%; background: var(--success); border-color: var(--success); box-shadow: 0 5px 15px rgba(16, 185, 129, 0.3);">
+        🚀 Ir al Dashboard SOC
+      </button>
+    </div>
+  </div>
+
+  <script src="options.js"></script>
+</body>
+</html>

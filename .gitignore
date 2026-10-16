@@ -1,0 +1,14 @@
+.env
+**/.env
+*.exe
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+debug.png
+services.zip
+node_modules/
+*.bak
+*.zip
+*.rar
+data/

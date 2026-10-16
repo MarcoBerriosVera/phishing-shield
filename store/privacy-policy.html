@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Política de Privacidad — Phishing Shield</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f8fafc;
+      color: #1e293b;
+      line-height: 1.7;
+      font-size: 16px;
+    }
+    header {
+      background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 100%);
+      color: white;
+      padding: 48px 24px;
+      text-align: center;
+    }
+    header h1 { font-size: 2rem; font-weight: 800; letter-spacing: -0.5px; }
+    header p  { margin-top: 8px; color: #94a3b8; font-size: 0.95rem; }
+    .badge {
+      display: inline-block;
+      margin-top: 16px;
+      background: rgba(0,229,160,0.15);
+      border: 1px solid rgba(0,229,160,0.4);
+      color: #00e5a0;
+      padding: 4px 14px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+    main {
+      max-width: 780px;
+      margin: 48px auto;
+      padding: 0 24px 80px;
+    }
+    .card {
+      background: white;
+      border-radius: 12px;
+      border: 1px solid #e2e8f0;
+      padding: 32px;
+      margin-bottom: 24px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+    .card.highlight {
+      border-left: 4px solid #00e5a0;
+      background: #f0fdf9;
+    }
+    .card.warning {
+      border-left: 4px solid #f59e0b;
+      background: #fffbeb;
+    }
+    h2 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #0f172a;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    h2 .icon { font-size: 1.3rem; }
+    p { margin-bottom: 12px; color: #374151; }
+    ul { margin: 8px 0 12px 20px; }
+    li { margin-bottom: 6px; color: #374151; }
+    .no-data {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      background: #ecfdf5;
+      border-radius: 8px;
+      margin: 8px 0;
+      font-weight: 600;
+      color: #065f46;
+      font-size: 0.9rem;
+    }
+    .meta {
+      text-align: center;
+      color: #94a3b8;
+      font-size: 0.82rem;
+      margin-top: 40px;
+    }
+    a { color: #3b82f6; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    table { width: 100%; border-collapse: collapse; margin: 12px 0; }
+    th { background: #f1f5f9; text-align: left; padding: 10px 14px; font-size: 0.85rem; color: #64748b; }
+    td { padding: 10px 14px; border-bottom: 1px solid #f1f5f9; font-size: 0.9rem; }
+    tr:last-child td { border-bottom: none; }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>🛡️ Phishing Shield</h1>
+  <p>Extensión de seguridad para Google Chrome</p>
+  <span class="badge">Política de Privacidad</span>
+</header>
+
+<main>
+
+  <!-- Resumen ejecutivo -->
+  <div class="card highlight">
+    <h2><span class="icon">✅</span> Resumen: qué hacemos con tus datos</h2>
+    <div class="no-data">✓ No recopilamos ningún dato personal</div>
+    <div class="no-data">✓ No enviamos tus contraseñas a ningún servidor</div>
+    <div class="no-data">✓ No usamos cookies de seguimiento ni analytics</div>
+    <div class="no-data">✓ Todo se procesa localmente en tu computador</div>
+  </div>
+
+  <!-- Fecha y alcance -->
+  <div class="card">
+    <h2><span class="icon">📄</span> Información general</h2>
+    <p>Esta Política de Privacidad describe cómo la extensión <strong>Phishing Shield</strong> maneja la información del usuario. Al instalar y utilizar esta extensión, aceptas los términos aquí descritos.</p>
+    <table>
+      <tr><th>Última actualización</th><td>Junio 2025</td></tr>
+      <tr><th>Desarrollador</th><td>Marco Berrios Vera</td></tr>
+      <tr><th>Contacto</th><td><a href="mailto:marcoberriosvera@gmail.com">marcoberriosvera@gmail.com</a></td></tr>
+      <tr><th>Marco legal</th><td>Ley N° 21.719 de Protección de Datos Personales (Chile)</td></tr>
+    </table>
+  </div>
+
+  <!-- Datos de navegación -->
+  <div class="card">
+    <h2><span class="icon">🌐</span> Análisis de URLs</h2>
+    <p>Phishing Shield analiza las URLs que visitas para detectar sitios de phishing. Este proceso funciona así:</p>
+    <ul>
+      <li>La URL de cada página que visitas se envía a un <strong>servidor local en tu propio computador</strong> (localhost:8080) para su análisis.</li>
+      <li>El análisis se realiza por múltiples microservicios que corren localmente (heurísticas, similitud, reputación, modelo de IA).</li>
+      <li><strong>Ninguna URL es enviada a servidores externos</strong>, con excepción del servicio de reputación que consulta la API pública de VirusTotal para verificar dominios contra bases de datos de amenazas conocidas.</li>
+      <li>Los resultados del análisis se almacenan localmente en el almacenamiento de Chrome (<code>chrome.storage.local</code>) únicamente para mostrar el historial en la interfaz. Estos datos nunca salen de tu dispositivo.</li>
+    </ul>
+    <p><strong>Servicio de reputación (VirusTotal):</strong> Al analizar una URL, el dominio puede ser consultado contra la API de VirusTotal. Esta consulta se realiza desde tu servidor local, no desde los servidores de Phishing Shield. VirusTotal tiene su propia política de privacidad disponible en <a href="https://www.virustotal.com/gui/privacy-policy" target="_blank">virustotal.com</a>.</p>
+  </div>
+
+  <!-- Gestor de contraseñas -->
+  <div class="card">
+    <h2><span class="icon">🔐</span> Gestor de contraseñas</h2>
+    <p>El gestor de contraseñas integrado en Phishing Shield fue diseñado con privacidad total como principio fundamental:</p>
+    <ul>
+      <li><strong>Cifrado local:</strong> Todas las contraseñas se cifran con AES-256-GCM antes de ser almacenadas en <code>chrome.storage.local</code>, que es el almacenamiento local de tu navegador Chrome.</li>
+      <li><strong>Clave maestra solo tuya:</strong> La clave de cifrado se deriva de tu contraseña maestra mediante PBKDF2-HMAC-SHA256 con 600.000 iteraciones. Esta clave nunca sale de tu dispositivo.</li>
+      <li><strong>Sin sincronización en la nube:</strong> Las contraseñas guardadas nunca se transmiten a ningún servidor externo. Solo existen en tu computador.</li>
+      <li><strong>Verificación de brechas (HIBP):</strong> Al guardar una contraseña, Phishing Shield puede verificar si ha sido comprometida en brechas de datos conocidas usando el servicio Have I Been Pwned. Esta verificación usa el protocolo de <em>k-anonimato</em>: solo se envían los primeros 5 caracteres del hash SHA-1 de la contraseña. La contraseña completa nunca sale de tu dispositivo. Más información en <a href="https://haveibeenpwned.com/Privacy" target="_blank">haveibeenpwned.com/Privacy</a>.</li>
+    </ul>
+  </div>
+
+  <!-- Permisos -->
+  <div class="card">
+    <h2><span class="icon">🔑</span> Permisos requeridos y su uso</h2>
+    <table>
+      <tr>
+        <th>Permiso</th>
+        <th>Por qué se usa</th>
+      </tr>
+      <tr>
+        <td><code>webNavigation</code></td>
+        <td>Detectar cuando el usuario navega a una nueva página para analizarla antes de cargar</td>
+      </tr>
+      <tr>
+        <td><code>activeTab</code></td>
+        <td>Leer la URL de la pestaña activa para el análisis de phishing</td>
+      </tr>
+      <tr>
+        <td><code>storage</code></td>
+        <td>Almacenar el historial de análisis y el vault cifrado de contraseñas localmente en Chrome</td>
+      </tr>
+      <tr>
+        <td><code>alarms</code></td>
+        <td>Bloquear automáticamente el gestor de contraseñas después de 15 minutos de inactividad</td>
+      </tr>
+      <tr>
+        <td><code>clipboardWrite</code></td>
+        <td>Copiar contraseñas al portapapeles cuando el usuario lo solicita explícitamente</td>
+      </tr>
+      <tr>
+        <td><code>scripting</code></td>
+        <td>Inyectar el aviso de bloqueo en páginas peligrosas detectadas</td>
+      </tr>
+      <tr>
+        <td><code>&lt;all_urls&gt;</code></td>
+        <td>Analizar todas las páginas visitadas para protección completa contra phishing</td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- Datos que NO recopilamos -->
+  <div class="card warning">
+    <h2><span class="icon">🚫</span> Lo que NO hacemos</h2>
+    <ul>
+      <li>No recopilamos estadísticas de uso ni enviamos datos de telemetría</li>
+      <li>No usamos servicios de analytics (Google Analytics, Mixpanel, etc.)</li>
+      <li>No compartimos ningún dato con terceros salvo lo descrito en esta política</li>
+      <li>No almacenamos contraseñas en texto plano en ningún momento</li>
+      <li>No tenemos acceso remoto a los datos del usuario</li>
+      <li>No mostramos publicidad ni vendemos datos a anunciantes</li>
+    </ul>
+  </div>
+
+  <!-- Derechos del usuario -->
+  <div class="card">
+    <h2><span class="icon">⚖️</span> Tus derechos (Ley 21.719)</h2>
+    <p>De acuerdo con la Ley N° 21.719 de Protección de Datos Personales de Chile, tienes derecho a:</p>
+    <ul>
+      <li><strong>Acceso:</strong> Dado que todos los datos se almacenan localmente en tu dispositivo, tienes acceso completo en todo momento a través de la propia extensión.</li>
+      <li><strong>Eliminación:</strong> Puedes eliminar todos los datos de Phishing Shield desinstalando la extensión o usando la opción "Resetear vault" dentro del gestor de contraseñas.</li>
+      <li><strong>Portabilidad:</strong> Tus contraseñas se almacenan en tu dispositivo y pueden ser exportadas en formato cifrado.</li>
+    </ul>
+    <p>Para cualquier consulta sobre privacidad, contáctanos en <a href="mailto:marcoberriosvera@gmail.com">marcoberriosvera@gmail.com</a>.</p>
+  </div>
+
+  <!-- Cambios -->
+  <div class="card">
+    <h2><span class="icon">🔄</span> Cambios a esta política</h2>
+    <p>Si se realizan cambios significativos a esta política de privacidad, serán reflejados en esta página con una nueva fecha de actualización. El uso continuado de la extensión después de dichos cambios constituye la aceptación de la política actualizada.</p>
+  </div>
+
+  <div class="meta">
+    <p>© 2025 Phishing Shield · Proyecto de Título en Ciberseguridad</p>
+    <p style="margin-top:4px">Esta política fue redactada en conformidad con la Ley N° 21.719 de Chile y las políticas del programa de desarrolladores de Google Chrome.</p>
+  </div>
+
+</main>
+</body>
+</html>

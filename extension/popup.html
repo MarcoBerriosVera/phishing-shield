@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Phishing Shield</title>
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self';">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #090a0f;
+      --panel-bg: rgba(17, 19, 24, 0.85);
+      --border-color: rgba(255, 255, 255, 0.08);
+      --text-main: #e8eaf0;
+      --text-muted: #6b7280;
+      --success: #10b981;
+      --success-glow: rgba(16, 185, 129, 0.25);
+      --warning: #f59e0b;
+      --warning-glow: rgba(245, 158, 11, 0.25);
+      --danger: #ef4444;
+      --danger-glow: rgba(239, 68, 68, 0.25);
+      --inactive: #4b5563;
+      --inactive-glow: rgba(75, 85, 99, 0.25);
+      --accent: #3b82f6;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Outfit', sans-serif;
+    }
+
+    body {
+      width: 330px;
+      background: var(--bg-dark);
+      color: var(--text-main);
+      overflow-x: hidden;
+      padding: 16px;
+    }
+
+    /* Contenedor principal con efecto glassmorphism */
+    .container {
+      background: var(--panel-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+      padding: 20px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* Cabecera */
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 12px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-icon {
+      width: 24px;
+      height: 24px;
+      color: var(--accent);
+    }
+
+    .brand h1 {
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      background: linear-gradient(90deg, #fff, #a3b3cc);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .badge-status {
+      font-size: 11px;
+      padding: 3px 10px;
+      border-radius: 20px;
+      background: rgba(59, 130, 246, 0.1);
+      border: 1px solid rgba(59, 130, 246, 0.2);
+      color: var(--accent);
+      font-weight: 500;
+    }
+
+    /* Estado Hero (Escudo) */
+    .hero-status {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      padding: 10px 0;
+    }
+
+    .shield-outer {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      transition: all 0.5s ease;
+    }
+
+    .shield-outer::after {
+      content: '';
+      position: absolute;
+      inset: -5px;
+      border-radius: 50%;
+      border: 2px dashed rgba(255, 255, 255, 0.05);
+      animation: rotateDashed 20s linear infinite;
+    }
+
+    @keyframes rotateDashed {
+      100% { transform: rotate(360deg); }
+    }
+
+    .shield-inner {
+      width: 76px;
+      height: 76px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.5s ease;
+      box-shadow: inset 0 4px 10px rgba(255, 255, 255, 0.05);
+    }
+
+    .shield-icon {
+      width: 38px;
+      height: 38px;
+      transition: all 0.5s ease;
+    }
+
+    .hero-text {
+      text-align: center;
+    }
+
+    .hero-text h2 {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 2px;
+      transition: color 0.5s ease;
+    }
+
+    .hero-text p {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    /* Estados dinámicos del escudo */
+    .state-safe {
+      background: var(--success-glow);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      box-shadow: 0 0 25px var(--success-glow);
+    }
+    .state-safe .shield-inner { border-color: rgba(16, 185, 129, 0.4); }
+    .state-safe .shield-icon { color: var(--success); filter: drop-shadow(0 0 4px var(--success)); }
+    .state-safe-text { color: var(--success); }
+
+    .state-warning {
+      background: var(--warning-glow);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      box-shadow: 0 0 25px var(--warning-glow);
+    }
+    .state-warning .shield-inner { border-color: rgba(245, 158, 11, 0.4); }
+    .state-warning .shield-icon { color: var(--warning); filter: drop-shadow(0 0 4px var(--warning)); }
+    .state-warning-text { color: var(--warning); }
+
+    .state-danger {
+      background: var(--danger-glow);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      box-shadow: 0 0 25px var(--danger-glow);
+    }
+    .state-danger .shield-inner { border-color: rgba(239, 68, 68, 0.4); }
+    .state-danger .shield-icon { color: var(--danger); filter: drop-shadow(0 0 4px var(--danger)); }
+    .state-danger-text { color: var(--danger); }
+
+    .state-off {
+      background: var(--inactive-glow);
+      border: 1px solid rgba(75, 85, 99, 0.3);
+      box-shadow: 0 0 15px var(--inactive-glow);
+    }
+    .state-off .shield-inner { border-color: rgba(75, 85, 99, 0.4); }
+    .state-off .shield-icon { color: var(--text-muted); }
+    .state-off-text { color: var(--text-muted); }
+
+    /* Panel de Estadísticas */
+    .stats-card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 12px 8px;
+    }
+
+    .stats-row {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+    }
+
+    .stat {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      width: 30%;
+    }
+
+    .stat-val {
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .stat-lbl {
+      font-size: 10px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* Última URL analizada */
+    .last-url-box {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .section-title {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .url-pill {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .url-text {
+      font-size: 11px;
+      color: var(--text-main);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-family: monospace;
+    }
+
+    .url-result-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .score-badge {
+      font-size: 10px;
+      padding: 2px 8px;
+      border-radius: 20px;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+    .badge-safe { background: rgba(16, 185, 129, 0.15); color: var(--success); }
+    .badge-suspicious { background: rgba(245, 158, 11, 0.15); color: var(--warning); }
+    .badge-danger { background: rgba(239, 68, 68, 0.15); color: var(--danger); }
+
+    .score-value {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    /* Colapsable de Detalles Técnicos */
+    .collapsible-trigger {
+      width: 100%;
+      background: none;
+      border: none;
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      cursor: pointer;
+      padding: 6px 0;
+      transition: opacity 0.2s;
+    }
+
+    .collapsible-trigger:hover {
+      opacity: 0.8;
+    }
+
+    .collapsible-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s ease-out;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .collapsible-content.expanded {
+      max-height: 180px; /* Suficiente para la grilla de servicios */
+    }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      padding: 4px 0;
+    }
+
+    .service-card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 8px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .service-name {
+      font-size: 10px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .service-status {
+      font-size: 11px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .service-status.online { color: var(--success); }
+    .service-status.offline { color: var(--danger); }
+
+    .service-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+    }
+    .online .service-dot { background: var(--success); box-shadow: 0 0 5px var(--success); }
+    .offline .service-dot { background: var(--danger); }
+
+    /* Footer */
+    .footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid var(--border-color);
+      padding-top: 12px;
+      margin-top: 4px;
+    }
+
+    .version {
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+
+    .toggle-container {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .toggle-label {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    /* Switch iOS Style */
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 36px;
+      height: 20px;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      inset: 0;
+      background-color: #374151;
+      transition: .4s;
+      border-radius: 34px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 14px;
+      width: 14px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+
+    input:checked + .slider {
+      background-color: var(--success);
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(16px);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Cabecera -->
+    <header class="header" role="banner">
+      <div class="brand">
+        <svg class="brand-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+        </svg>
+        <h1>PHISHING SHIELD</h1>
+      </div>
+      <div class="badge-status" id="badge-version">Pro</div>
+    </header>
+
+    <!-- Estado Hero (Gran Escudo Central) -->
+    <section class="hero-status" aria-live="polite">
+      <div class="shield-outer state-safe" id="shieldOuter">
+        <div class="shield-inner">
+          <svg class="shield-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            <polyline points="9 11 11 13 15 9"/>
+          </svg>
+        </div>
+      </div>
+      <div class="hero-text">
+        <h2 id="statusTitle" class="state-safe-text">Navegación Segura</h2>
+        <p id="statusDesc">Tu protección está activa y vigilando</p>
+      </div>
+    </section>
+
+    <!-- Panel de Estadísticas Simplificadas -->
+    <section class="stats-card" aria-label="Estadísticas de navegación">
+      <div class="stats-row">
+        <div class="stat">
+          <span class="stat-val" id="totalScanned" style="color: var(--accent)">0</span>
+          <span class="stat-lbl">Analizadas</span>
+        </div>
+        <div class="stat" style="border-left: 1px solid var(--border-color); border-right: 1px solid var(--border-color);">
+          <span class="stat-val" id="totalSafe" style="color: var(--success)">0</span>
+          <span class="stat-lbl">Seguras</span>
+        </div>
+        <div class="stat">
+          <span class="stat-val" id="totalDanger" style="color: var(--danger)">0</span>
+          <span class="stat-lbl">Bloqueadas</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Última URL analizada -->
+    <section class="last-url-box" aria-labelledby="last-url-title">
+      <span class="section-title" id="last-url-title">Última página analizada</span>
+      <div class="url-pill">
+        <span class="url-text" id="lastUrl">Ninguna página analizada en esta sesión</span>
+        <div class="url-result-row" id="lastUrlScore" style="display: none;">
+          <span class="score-badge badge-safe" id="lastUrlBadge">✓ Seguro</span>
+          <span class="score-value" id="lastUrlScoreVal">Confianza: 100%</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Colapsable Detalles Avanzados -->
+    <section aria-label="Detalles de protección avanzada">
+      <button class="collapsible-trigger" id="btnToggleDetails" aria-expanded="false" aria-controls="advancedDetails">
+        <span>Mostrar detalles avanzados</span>
+        <svg id="chevronIcon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="transition: transform 0.3s;">
+          <polyline points="6 9 12 15 18 9"/>
+        </svg>
+      </button>
+      
+      <div class="collapsible-content" id="advancedDetails">
+        <div class="services-grid">
+          <div class="service-card">
+            <span class="service-name">Análisis de Enlace</span>
+            <div class="service-status online" id="svc-heuristics">
+              <div class="service-dot"></div> Online
+            </div>
+          </div>
+          <div class="service-card">
+            <span class="service-name">Verificación de Marca</span>
+            <div class="service-status online" id="svc-similarity">
+              <div class="service-dot"></div> Online
+            </div>
+          </div>
+          <div class="service-card">
+            <span class="service-name">Base de Datos Global</span>
+            <div class="service-status online" id="svc-reputation">
+              <div class="service-dot"></div> Online
+            </div>
+          </div>
+          <div class="service-card">
+            <span class="service-name">Protección por I.A.</span>
+            <div class="service-status online" id="svc-ml">
+              <div class="service-dot"></div> Online
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Acceso al Gestor de Contraseñas -->
+    <section style="margin-top:-8px">
+      <button id="btnOpenVault" style="
+        width:100%; background:rgba(0,229,160,0.07); border:1px solid rgba(0,229,160,0.25);
+        border-radius:12px; padding:9px 14px; color:#00e5a0; font-size:12px; font-weight:600;
+        cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px;
+        transition:background 0.2s; font-family:inherit;">
+        🔑 Gestor de Contraseñas
+      </button>
+    </section>
+
+    <!-- Footer con Switch -->
+    <footer class="footer">
+      <span class="version">v1.2.0 · Phishing Shield</span>
+      <div class="toggle-container">
+        <span class="toggle-label" id="toggleLabel">Activo</span>
+        <label class="switch" aria-label="Activar o desactivar protección de Phishing Shield">
+          <input type="checkbox" id="chkActive" checked>
+          <span class="slider"></span>
+        </label>
+      </div>
+    </footer>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

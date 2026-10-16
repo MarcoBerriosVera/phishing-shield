@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Defensa de Título - Phishing Shield</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Sleek Progress Bar -->
+    <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <!-- Floating Logo Header (Branding on every slide) -->
+    <div class="logo-header">
+        <img src="logo.png" alt="Phishing Shield Logo">
+        <span>Phishing Shield</span>
+    </div>
+
+    <!-- Presentation Canvas -->
+    <div class="presentation-container">
+        
+        <!-- Slide 1: Cover Page -->
+        <section class="slide active" id="slide-1">
+            <div class="slide-content cover-slide">
+                <div class="cover-logo">
+                    <img src="logo.png" alt="Phishing Shield Logo">
+                </div>
+                <div class="badge"><i class="fa-solid fa-graduation-cap"></i> TRABAJO DE TITULACIÓN</div>
+                <h1 class="glow-text">Phishing Shield</h1>
+                <p class="subtitle">Sistema Inteligente y Distribuido de Detección y Mitigación de Phishing en Tiempo Real</p>
+                <div class="cover-details">
+                    <p><strong>Estudiante:</strong> Marco Berríos Vera</p>
+                    <p><strong>Profesor Guía:</strong> Jorge Mancilla Monsalve</p>
+                    <p><strong>Carrera:</strong> TNS en Informática Mención Ciberseguridad</p>
+                    <p><strong>Institución:</strong> CFT Estatal Región de Valparaíso</p>
+                </div>
+                <div class="year-badge">2026</div>
+            </div>
+        </section>
+
+        <!-- Slide 2: El Problema -->
+        <section class="slide" id="slide-2">
+            <div class="slide-content">
+                <h2><i class="fa-solid fa-triangle-exclamation text-red"></i> El Problema del Phishing</h2>
+                <div class="grid-2">
+                    <div class="card border-red">
+                        <h3><i class="fa-solid fa-shield-cat text-red"></i> Limitaciones Tradicionales</h3>
+                        <ul>
+                            <li><strong>Listas Negras Estáticas:</strong> Tardan de 12 a 24 horas en actualizarse. Un sitio de phishing dura en promedio solo 2 horas en línea.</li>
+                            <li><strong>Bypasses Modernos:</strong> Redirecciones dinámicas, acortadores de URL y certificados SSL válidos evaden firewalls perimetrales.</li>
+                            <li><strong>Costo del Ataque:</strong> El factor humano sigue siendo la brecha principal de acceso para Ransomware y robo de credenciales corporativas.</li>
+                        </ul>
+                    </div>
+                    <div class="stats-panel">
+                        <div class="stat-card">
+                            <span class="stat-num text-red">>60%</span>
+                            <span class="stat-lbl">De los incidentes inician con phishing</span>
+                        </div>
+                        <div class="stat-card">
+                            <span class="stat-num text-yellow">2 hrs</span>
+                            <span class="stat-lbl">Vida útil promedio de un dominio malicioso</span>
+                        </div>
+                        <div class="stat-card">
+                            <span class="stat-num text-blue">$0</span>
+                            <span class="stat-lbl">Costo inicial para un ciberdelincuente</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 3: Propuesta de Valor -->
+        <section class="slide" id="slide-3">
+            <div class="slide-content">
+                <h2><i class="fa-solid fa-lightbulb text-green"></i> Propuesta de Valor: Phishing Shield</h2>
+                <p class="section-intro">Cambiando la defensa reactiva por protección activa en el endpoint corporativo.</p>
+                <div class="flex-cards">
+                    <div class="card hover-glow">
+                        <div class="card-icon"><i class="fa-solid fa-network-wired text-blue"></i></div>
+                        <h3>Interceptación de Red</h3>
+                        <p>Análisis en el ciclo de vida del navegador antes de renderizar el código HTML sospechoso. Zero-Trust total.</p>
+                    </div>
+                    <div class="card hover-glow">
+                        <div class="card-icon"><i class="fa-solid fa-microchip text-purple"></i></div>
+                        <h3>Detección Multicapa</h3>
+                        <p>5 motores independientes analizando simultáneamente: Heurística, Reputación, Similitud, ML e Identidad Visual.</p>
+                    </div>
+                    <div class="card hover-glow">
+                        <div class="card-icon"><i class="fa-solid fa-lock text-green"></i></div>
+                        <h3>Cero Conocimiento</h3>
+                        <p>Bóveda local segura cifrada con AES-256-GCM y temporizador de autobloqueo de 3 minutos para resguardo físico.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 4: Arquitectura del Sistema (Interactive) -->
+        <section class="slide" id="slide-4">
+            <div class="slide-content">
+                <h2><i class="fa-solid fa-diagram-project text-blue"></i> Arquitectura Técnica Distribuida</h2>
+                <p class="section-intro">Haz clic en los componentes para ver el flujo de datos:</p>
+                
+                <div class="interactive-arch">
+                    <div class="arch-node active" data-node="extension">
+                        <i class="fa-brands fa-chrome"></i>
+                        <span>Extensión Chrome</span>
+                    </div>
+                    <div class="arch-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+                    <div class="arch-node" data-node="orchestrator">
+                        <i class="fa-solid fa-server"></i>
+                        <span>Orquestador Go</span>
+                    </div>
+                    <div class="arch-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+                    <div class="arch-node" data-node="engines">
+                        <i class="fa-solid fa-cubes"></i>
+                        <span>Motores Docker</span>
+                    </div>
+                </div>
+
+                <div class="arch-description-card card" id="archDesc">
+                    <h3 id="archDescTitle">Extensión Chrome (Manifest V3)</h3>
+                    <p id="archDescText">Agente cliente que utiliza los listeners de navegación web para interceptar peticiones. Suspende el flujo HTTP, envía la URL al orquestador y ejecuta la inyección de la pantalla de bloqueo en caso de peligro.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 5: Motores de Detección -->
+        <section class="slide" id="slide-5">
+            <div class="slide-content">
+                <h2><i class="fa-solid fa-cubes text-purple"></i> Los 5 Motores del Ecosistema</h2>
+                <div class="engines-list">
+                    <div class="engine-row">
+                        <div class="engine-tag tag-go">Heurístico (Go)</div>
+                        <div class="engine-desc">Analiza la sintaxis de la URL, cantidad de subdominios, entropía y TLDs de bajo costo (.xyz, .top).</div>
+                    </div>
+                    <div class="engine-row">
+                        <div class="engine-tag tag-go">Similitud (Go)</div>
+                        <div class="engine-desc">Calcula la Distancia de Levenshtein contra un diccionario local de marcas (previene Typosquatting).</div>
+                    </div>
+                    <div class="engine-row">
+                        <div class="engine-tag tag-go">Reputación (Go)</div>
+                        <div class="engine-desc">Verifica listas negras locales integradas y consulta asíncronamente APIs externas (VirusTotal).</div>
+                    </div>
+                    <div class="engine-row">
+                        <div class="engine-tag tag-python">Inteligencia Artificial (FastAPI)</div>
+                        <div class="engine-desc">Modelo Random Forest compilado en ONNX Runtime. 93.2% de precisión en clasificación semántica.</div>
+                    </div>
+                    <div class="engine-row">
+                        <div class="engine-tag tag-python">Visual Cromático (FastAPI)</div>
+                        <div class="engine-desc">Analiza los histogramas de color y distribución estructural del DOM para detectar imitaciones visuales.</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 6: Criptografía y Vault -->
+        <section class="slide" id="slide-6">
+            <div class="slide-content">
+                <h2><i class="fa-solid fa-vault text-green"></i> Seguridad en el Cliente: Vault Criptográfico</h2>
+                <div class="grid-2">
+                    <div class="card border-green">
+                        <h3><i class="fa-solid fa-key text-green"></i> Custodia Local Cero-Conocimiento</h3>
+                        <ul>
+                            <li><strong>Derivación:</strong> La clave KEK se deriva mediante <strong>PBKDF2</strong> a partir de la clave maestra con Salt dinámico.</li>
+                            <li><strong>Cifrado Simétrico:</strong> Credenciales cifradas localmente en el almacenamiento persistente mediante <strong>AES-256-GCM</strong>.</li>
+                            <li><strong>Aislamiento de Clave:</strong> La clave DEK no se escribe en disco, reside exclusivamente en la RAM del Service Worker.</li>
+                        </ul>
+                    </div>
+                    <div class="card border-yellow">
+                        <h3><i class="fa-solid fa-clock text-yellow"></i> Temporizador de Autobloqueo</h3>
+                        <p>Para mitigar ataques de acceso físico en equipos desatendidos:</p>
+                        <div class="timer-display">
+                            <span class="timer-num">180s</span>
+                            <span class="timer-lbl">De inactividad (3 minutos)</span>
+                        </div>
+                        <p class="timer-note">Al expirar, se borra proactivamente la DEK de la memoria RAM del navegador y se solicita de nuevo la contraseña maestra.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 7: Dashboard SOC -->
+        <section class="slide" id="slide-7">
+            <div class="slide-content">
+                <h2><i class="fa-solid fa-desktop text-blue"></i> Consola SOC en Tiempo Real</h2>
+                <div class="grid-2">
+                    <div class="card">
+                        <h3><i class="fa-solid fa-bolt text-yellow"></i> Observabilidad en vivo</h3>
+                        <p>Toda alerta generada en cualquier computador de la empresa se reporta en menos de 50 ms a la central de seguridad corporativa.</p>
+                        <ul class="margin-top-20">
+                            <li>Conexión asíncrona permanente vía <strong>WebSockets</strong>.</li>
+                            <li>Listado de incidentes detallando motor culpable, URL comprometida e IP origen.</li>
+                            <li>Modo Demo integrado para auditorías y simulaciones locales rápidas.</li>
+                        </ul>
+                    </div>
+                    <div class="soc-preview-card">
+                        <div class="soc-header">
+                            <span class="dot-red"></span>
+                            <span class="soc-title">SOC LIVE LOGS</span>
+                        </div>
+                        <div class="soc-logs" id="socLogs">
+                            <div class="log-line"><span class="log-time">[16:20:11]</span> <span class="log-tag red">DANGER</span> Interceptado: paypa1-login.xyz (Levenshtein match)</div>
+                            <div class="log-line"><span class="log-time">[16:21:05]</span> <span class="log-tag yellow">WARNING</span> Analizado: google.com (Veredicto: SEGURO)</div>
+                            <div class="log-line"><span class="log-time">[16:22:40]</span> <span class="log-tag red">DANGER</span> Interceptado: secure-bci-portal.top (ML ONNX trigger)</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 8: Métricas de Validación (Interactive Chart) -->
+        <section class="slide" id="slide-8">
+            <div class="slide-content">
+                <h2><i class="fa-solid fa-chart-simple text-green"></i> Métricas de Rendimiento del Ecosistema</h2>
+                <p class="section-intro">Tiempos individuales de análisis asíncrono y resolución concurrente:</p>
+                
+                <div class="grid-2">
+                    <!-- Chart Panel -->
+                    <div class="chart-panel">
+                        <div class="bar-row">
+                            <span class="bar-label">Heurístico (Go)</span>
+                            <div class="bar-container"><div class="bar bg-green" style="width: 15%">40ms</div></div>
+                        </div>
+                        <div class="bar-row">
+                            <span class="bar-label">Similitud (Go)</span>
+                            <div class="bar-container"><div class="bar bg-green" style="width: 25%">85ms</div></div>
+                        </div>
+                        <div class="bar-row">
+                            <span class="bar-label">Reputación (Go)</span>
+                            <div class="bar-container"><div class="bar bg-blue" style="width: 45%">150ms</div></div>
+                        </div>
+                        <div class="bar-row">
+                            <span class="bar-label">Inteligencia Artificial (ONNX)</span>
+                            <div class="bar-container"><div class="bar bg-purple" style="width: 65%">220ms</div></div>
+                        </div>
+                        <div class="bar-row">
+                            <span class="bar-label">Visual Cromático (FastAPI)</span>
+                            <div class="bar-container"><div class="bar bg-purple" style="width: 85%">310ms</div></div>
+                        </div>
+                        <div class="bar-row highlight-row">
+                            <span class="bar-label font-bold">Resolución Concurrente Go</span>
+                            <div class="bar-container"><div class="bar bg-gradient" style="width: 95%">420ms (Consolidado)</div></div>
+                        </div>
+                    </div>
+
+                    <!-- Metrics Details -->
+                    <div class="card border-blue">
+                        <h3><i class="fa-solid fa-list-check text-blue"></i> Resultados de Pruebas</h3>
+                        <ul>
+                            <li><strong>Precisión de IA (Accuracy):</strong> <strong>93.2%</strong> de efectividad del clasificador Random Forest ONNX.</li>
+                            <li><strong>Auditoría OWASP:</strong> Encriptación de endpoints, sanitización de datos y Rate Limiting a nivel de enrutador Chi.</li>
+                            <li><strong>Alineación NIST CSF:</strong> Soporta las funciones de Identificar (Assets), Proteger (Vault), Detectar (Motores) y Responder (Dashboard SOC).</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 9: Modelo Comercial -->
+        <section class="slide" id="slide-9">
+            <div class="slide-content">
+                <h2><i class="fa-solid fa-file-invoice-dollar text-yellow"></i> Factibilidad Comercial del Proyecto</h2>
+                <div class="grid-2">
+                    <div class="card hover-glow">
+                        <h3><i class="fa-solid fa-sack-dollar text-green"></i> Fuentes de Ingresos</h3>
+                        <div class="revenue-item">
+                            <span class="rev-title">Suscripción Mensual MSSP</span>
+                            <span class="rev-val">Desde $150.000 CLP / mes</span>
+                            <p>Monitoreo SOC en vivo, actualizaciones de firmas y despliegue del agente en computadores de la empresa.</p>
+                        </div>
+                        <div class="revenue-item margin-top-20">
+                            <span class="rev-title">Taller de Concientización</span>
+                            <span class="rev-val">$120.000 CLP (Pago único)</span>
+                            <p>Capacitación en uso seguro del Vault y mitigación del factor de ingeniería social en la organización.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="card hover-glow">
+                        <h3><i class="fa-solid fa-wallet text-red"></i> Estructura de Costos</h3>
+                        <ul>
+                            <li><strong>Sueldos de Equipo Técnico:</strong> Analistas SOC y mantenimiento del código backend en Go/Python.</li>
+                            <li><strong>Infraestructura Cloud:</strong> Servidores en la nube (AWS/Google Cloud) para alojar el orquestador y almacenar logs.</li>
+                            <li><strong>Capacitación y Licencias:</strong> Pago de certificaciones de ciberseguridad (como CEH) y licencias de firewall/SIEM.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 10: Conclusiones -->
+        <section class="slide" id="slide-10">
+            <div class="slide-content cover-slide final-slide">
+                <div class="badge success"><i class="fa-solid fa-circle-check"></i> CONCLUSIONES</div>
+                <h2 class="glow-text">Phishing Shield Completo</h2>
+                <p class="subtitle">Barrera de Ciberseguridad Corporativa Proactiva, Asíncrona e Inteligente</p>
+                <div class="bullets-final">
+                    <p><i class="fa-solid fa-check text-green"></i> Arquitectura contenerizada modular tolerante a fallos.</p>
+                    <p><i class="fa-solid fa-check text-green"></i> Rendimiento óptimo de concurrencia bajo los 420 ms.</p>
+                    <p><i class="fa-solid fa-check text-green"></i> Bóveda local Zero-Knowledge hermética ante ataques físicos.</p>
+                </div>
+                <p class="thanks-text">Muchas gracias por su atención.<br><strong>¿Preguntas o comentarios?</strong></p>
+            </div>
+        </section>
+
+        <!-- Slide Navigation Controls -->
+        <div class="nav-controls">
+            <button id="prevBtn" class="nav-btn"><i class="fa-solid fa-chevron-left"></i></button>
+            <span class="slide-counter" id="slideCounter">1 / 10</span>
+            <button id="nextBtn" class="nav-btn"><i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
